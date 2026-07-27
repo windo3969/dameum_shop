@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<!--
+  담음샵 리디자인 - 참고: 카페24 데모 쇼핑몰(ecudemo309578.cafe24.com)의 구조와
+  토스페이먼츠 상세페이지 작성 팁(숫자로 구조화, 스토리텔링, 구매 장벽 제거)을 참고해
+  로그인/결제 없는 담음 브랜드에 맞게 재구성했습니다.
+
+  2026-07 모노톤 리브랜딩: 담음로고.png(검정 고양이 캐릭터 + dameum 워드마크)에 맞춰
+  전체 컬러를 블루톤 → 흑백/그레이 톤으로, 헤딩 폰트를 Nanum Myeongjo → Gowun Dodum으로 교체했습니다.
+  사진 자체는 분위기가 너무 무거워지지 않도록 원래 컬러 그대로 보여줘요 (grayscale 필터 제거).
+
+  이미지 교체 안내 (images 폴더)
+  - images/hat1.jpg, hat2.jpg     : 모자 상품 2종
+  - images/shirt1.jpg, shirt2.jpg : 티셔츠 상품 2종
+  - images/case1.jpg, case2.jpg   : 폰케이스 상품 2종
+  - images/insta1.jpg ~ insta6.jpg : 하단 인스타그램 피드 미리보기 6장 (실제 인스타 사진으로 교체)
+  - images/review1.jpg ~ review6.jpg : 고객 후기 슬라이더용 사진 6장 (후기와 함께 받은 실제 사진으로 교체)
+  (키링 3종, 스토리 배경은 이미 있는 실제 사진을 쓰고 있어요: damum_2.jpg, damum_product_1~3.png)
+
+  상품/문구 교체 안내
+  하단 <script>의 PRODUCTS 배열과 FAQ 배열에서 내용을 바로 수정할 수 있어요.
+  FAQ의 교환·환불 답변은 정책이 정해지면 꼭 실제 내용으로 바꿔주세요.
+  PRODUCTS의 originalPrice/price(할인가)와 REVIEWS(후기)는 디자인 확인용 샘플 데이터예요.
+  실제 판매가와 후기가 준비되면 꼭 교체해주세요.
+-->
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>담음 DAMUM | 커스텀 소품샵</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1A1A1A;
+      --primary-light: #D9D6CF;
+      --primary-pale: #F2F0EC;
+      --accent: #1A1A1A;
+      --warm: #ECE9E3;
+      --warm-light: #FAFAF8;
+      --text: #1F1F1F;
+      --text-light: #767676;
+      --white: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Gowun Batang', serif;
+      background: var(--warm-light);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.2rem; }
+
+    .section-eyebrow {
+      display: block;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-family: 'Gowun Dodum', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      text-align: center;
+      margin: 0 0 0.6rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      max-width: 460px;
+      margin: 0 auto 2.2rem;
+    }
+
+    /* Marquee ticker */
+    .marquee-bar {
+      background: var(--text);
+      color: rgba(255,255,255,0.9);
+      font-size: 0.78rem;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 0.45rem 0;
+    }
+
+    .marquee-track {
+      display: inline-block;
+      animation: marquee 22s linear infinite;
+    }
+
+    .marquee-track span { padding: 0 1.5rem; }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(250, 250, 248, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--primary-pale);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.85rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-link { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-link img { height: 34px; width: 34px; object-fit: cover; border-radius: 50%; }
+
+    .gnb { display: none; gap: 1.8rem; list-style: none; margin: 0; padding: 0; }
+    .gnb a { text-decoration: none; font-size: 0.9rem; color: var(--text); }
+    .gnb a:hover { color: var(--accent); }
+
+    .header-ig {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      color: var(--accent);
+      border: 1.5px solid var(--primary-light);
+      padding: 0.45rem 0.85rem;
+      border-radius: 99px;
+      transition: background .2s ease;
+      white-space: nowrap;
+    }
+
+    .header-ig:hover { background: var(--primary-pale); }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--text);
+      background: var(--warm-light);
+      padding: 3.6rem 1.2rem 3rem;
+    }
+
+    .hero-badge {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-tagline-en {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      font-size: clamp(1.7rem, 6vw, 2.6rem);
+      line-height: 1.35;
+      letter-spacing: 0.01em;
+      margin: 0 0 0.7rem;
+    }
+
+    .hero-tagline-kr {
+      font-family: 'Gowun Dodum', sans-serif;
+      font-size: 1rem;
+      color: var(--text-light);
+      margin: 0 0 1.1rem;
+    }
+
+    .hero-desc {
+      font-size: 0.92rem;
+      color: var(--text-light);
+      max-width: 420px;
+      margin: 0 auto 1.8rem;
+    }
+
+    .hero-actions { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
+
+    .hero-btn {
+      padding: 0.85rem 1.6rem;
+      border-radius: 99px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all .2s ease;
+    }
+
+    .hero-btn.solid { background: var(--text); color: var(--white); }
+    .hero-btn.solid:hover { background: #000; }
+    .hero-btn.outline { border: 1.5px solid var(--text); color: var(--text); }
+    .hero-btn.outline:hover { background: var(--text); color: var(--white); }
+
+    /* Category nav */
+    .cat-nav { padding: 3rem 0 1rem; }
+
+    .cat-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.9rem;
+    }
+
+    .cat-nav-card {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      cursor: pointer;
+      background: var(--primary-pale);
+    }
+
+    .cat-nav-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+    .cat-nav-card:hover img { transform: scale(1.06); }
+
+    .cat-nav-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; color: var(--text-light);
+    }
+
+    .cat-nav-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(40, 40, 40, 0.32);
+      transition: background .3s ease;
+    }
+
+    .cat-nav-card:hover::after { background: rgba(40, 40, 40, 0.48); }
+
+    .cat-nav-label {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      text-align: center;
+      color: var(--white);
+    }
+
+    .cat-nav-label .name {
+      font-family: 'Gowun Dodum', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+    }
+
+    .cat-nav-label .more {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      opacity: 0.85;
+      border-top: 1px solid rgba(255,255,255,0.6);
+      padding-top: 0.35rem;
+    }
+
+    /* Top picks slider */
+    .top-picks { padding: 3.4rem 0 1rem; }
+
+    .top-slider-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .top-slider {
+      display: flex;
+      gap: 0.9rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding-bottom: 0.4rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .top-slider::-webkit-scrollbar { display: none; }
+
+    .top-slide {
+      position: relative;
+      flex: 0 0 46%;
+      aspect-ratio: 1 / 1;
+      border-radius: 4px;
+      overflow: hidden;
+      scroll-snap-align: start;
+      cursor: pointer;
+      background: var(--primary-pale);
+    }
+
+    .top-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .top-slide-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; color: var(--text-light);
+    }
+
+    .top-slide-rank {
+      position: absolute;
+      top: 10px; left: 10px;
+      font-family: 'Gowun Dodum', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--white);
+      background: rgba(40,40,40,0.55);
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+    }
+
+    .top-slide-hover {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      text-align: center;
+      padding: 1rem 0.8rem;
+      background: linear-gradient(to top, rgba(30,30,30,0.78) 0%, rgba(30,30,30,0.15) 55%, transparent 100%);
+      color: var(--white);
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+
+    .top-slide:hover .top-slide-hover,
+    .top-slide:focus-visible .top-slide-hover { opacity: 1; }
+
+    .top-slide-name {
+      font-family: 'Gowun Dodum', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin: 0 0 0.3rem;
+    }
+
+    .top-slide-price { font-size: 0.82rem; margin: 0; }
+    .top-slide-hover .price-original { color: rgba(255,255,255,0.6); }
+    .top-slide-hover .price-sale { color: var(--white); }
+
+    .slider-arrow {
+      flex-shrink: 0;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary-light);
+      background: var(--white);
+      color: var(--text);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s ease;
+    }
+
+    .slider-arrow:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+    /* Why section */
+    .why { padding: 3.4rem 0; }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+
+    .why-card {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 1.4rem;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .why-num {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--primary-pale);
+      color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Gowun Dodum', sans-serif;
+      font-weight: 700;
+    }
+
+    .why-card h3 { font-family: 'Gowun Dodum', sans-serif; font-size: 1.02rem; margin: 0 0 0.3rem; }
+    .why-card p { font-size: 0.87rem; color: var(--text-light); margin: 0; line-height: 1.65; }
+
+    /* Filter */
+    .shop-section { padding: 3.4rem 0 1rem; }
+
+    .filter-bar {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2.4rem;
+      border-bottom: 1px solid var(--primary-pale);
+    }
+
+    .filter-btn {
+      position: relative;
+      border: none;
+      background: none;
+      color: var(--text-light);
+      padding: 0.8rem 1.3rem;
+      border-radius: 0;
+      font-family: 'Gowun Dodum', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: color .2s ease;
+    }
+
+    .filter-btn::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      right: 50%;
+      bottom: -1px;
+      height: 2px;
+      background: var(--accent);
+      transition: left .25s ease, right .25s ease;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover { color: var(--text); }
+
+    .filter-btn.active::after { left: 8%; right: 8%; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1rem;
+      padding-bottom: 3.4rem;
+    }
+
+    .product-card {
+      background: none;
+      cursor: pointer;
+    }
+
+    .product-photo {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: var(--primary-pale);
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .product-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s ease;
+    }
+
+    .product-card:hover .product-photo img { transform: scale(1.05); }
+
+    .product-fallback {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px;
+      color: var(--text-light);
+      font-size: 11.5px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .product-fallback .icon { font-size: 22px; opacity: .6; }
+
+    .product-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: var(--white);
+      color: var(--text);
+      border: 1px solid var(--text);
+      font-size: 0.66rem;
+      letter-spacing: 0.05em;
+      padding: 0.22rem 0.55rem;
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .product-info { padding: 0.75rem 0.1rem 0; }
+    .product-name { font-family: 'Gowun Dodum', sans-serif; font-weight: 700; font-size: 0.92rem; margin: 0 0 0.35rem; }
+    .product-price { font-size: 0.86rem; }
+
+    .price-original {
+      text-decoration: line-through;
+      color: var(--text-light);
+      font-size: 0.82em;
+      margin-right: 0.4em;
+    }
+
+    .price-sale { color: var(--text); font-weight: 700; }
+    .price-percent {
+      display: inline-block;
+      background: var(--text);
+      color: var(--white);
+      font-size: 0.72em;
+      font-weight: 600;
+      padding: 0.1em 0.45em;
+      border-radius: 2px;
+      margin-left: 0.4em;
+      vertical-align: 1px;
+    }
+
+    /* Story banner */
+    .story {
+      position: relative;
+      min-height: 46vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--white);
+      overflow: hidden;
+      padding: 3rem 1.4rem;
+      margin-bottom: 3.4rem;
+    }
+
+    .story-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.03);
+      z-index: 0;
+    }
+
+    .story-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 20, 20, 0.5);
+      z-index: 1;
+    }
+
+    .story-inner { position: relative; z-index: 2; max-width: 480px; }
+    .story h2 { font-family: 'Gowun Dodum', sans-serif; font-size: clamp(1.4rem, 4vw, 2rem); margin: 0 0 0.8rem; }
+    .story p { font-size: 0.92rem; opacity: 0.92; line-height: 1.8; }
+
+    /* FAQ */
+    .faq { padding: 0 0 3.6rem; }
+
+    .faq-list { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .faq-item {
+      background: var(--white);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--primary-pale);
+    }
+
+    .faq-q {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: 'Gowun Batang', serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .faq-q .arrow { transition: transform .2s ease; color: var(--accent); flex-shrink: 0; }
+    .faq-item.open .faq-q .arrow { transform: rotate(180deg); }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease;
+    }
+
+    .faq-item.open .faq-a { max-height: 220px; }
+
+    .faq-a p {
+      margin: 0;
+      padding: 0 1.2rem 1.1rem;
+      font-size: 0.86rem;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    /* Reviews */
+    .reviews { padding: 0 0 3.6rem; }
+
+    .review-slider-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .review-slider {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding-bottom: 0.4rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .review-slider::-webkit-scrollbar { display: none; }
+
+    .review-slide {
+      flex: 0 0 78%;
+      scroll-snap-align: start;
+      background: var(--white);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .review-photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--primary-pale);
+      overflow: hidden;
+    }
+
+    .review-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .review-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      color: var(--text-light);
+    }
+
+    .review-body { padding: 1.1rem 1.2rem 1.3rem; }
+
+    .review-stars { color: var(--text); font-size: 0.85rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
+
+    .review-content {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin: 0 0 1rem;
+    }
+
+    .review-author { display: flex; align-items: center; gap: 0.7rem; }
+
+    .review-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--primary-pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .review-author-info .name { font-weight: 700; font-size: 0.85rem; display: block; }
+    .review-author-info .product { font-size: 0.78rem; color: var(--text-light); }
+
+    /* Instagram feed */
+    .insta-feed { padding: 0 0 3.6rem; }
+
+    .insta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .insta-tile {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: var(--primary-pale);
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+    }
+
+    .insta-tile img { width: 100%; height: 100%; object-fit: cover; }
+
+    .insta-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-light);
+      font-size: 20px;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+      padding: 2.6rem 1.2rem 1.6rem;
+      font-size: 0.85rem;
+    }
+
+    footer .foot-brand { font-family: 'Gowun Dodum', sans-serif; font-size: 1.05rem; color: var(--white); margin-bottom: 0.5rem; }
+    footer a { color: var(--primary-light); text-decoration: none; }
+    footer .foot-links { margin: 1rem 0; display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; font-size: 0.82rem; }
+    footer .foot-copy { margin-top: 1.4rem; opacity: 0.55; font-size: 0.75rem; }
+
+    /* Modal (product detail) */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(58, 58, 58, 0.55);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: var(--white);
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      overflow-y: auto;
+      border-radius: 24px 24px 0 0;
+      position: relative;
+      animation: slideUp .3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      font-size: 18px;
+      color: var(--text);
+      cursor: pointer;
+      z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .modal-photo { position: relative; width: 100%; aspect-ratio: 1 / 1; background: var(--primary-pale); overflow: hidden; }
+    .modal-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .modal-fallback {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px;
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    .modal-fallback .icon { font-size: 32px; opacity: .6; }
+
+    .modal-body { padding: 1.4rem 1.4rem 1.8rem; }
+
+    .modal-badge {
+      display: inline-block;
+      background: var(--primary-pale);
+      color: var(--accent);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 99px;
+      margin-bottom: 0.6rem;
+    }
+
+    .modal-name { font-family: 'Gowun Dodum', sans-serif; font-weight: 700; font-size: 1.25rem; margin: 0 0 0.3rem; }
+    .modal-price { color: var(--accent); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.8rem; }
+    .modal-desc { color: var(--text-light); font-size: 0.9rem; line-height: 1.75; margin-bottom: 1.4rem; }
+    .modal-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .modal-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.9rem;
+      border-radius: 14px;
+      font-family: 'Gowun Batang', serif;
+      font-size: 0.92rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+
+    .modal-btn:active { transform: scale(.98); }
+    .modal-btn.primary { background: var(--text); color: var(--white); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22); }
+    .modal-btn.primary:hover { background: #000; }
+    .modal-btn.secondary { background: var(--primary-pale); color: var(--accent); }
+    .modal-btn.disabled { background: var(--warm); color: var(--text-light); pointer-events: none; }
+
+    /* Desktop */
+    @media (min-width: 720px) {
+      .gnb { display: flex; }
+      .cat-nav-grid { grid-template-columns: repeat(4, 1fr); }
+      .top-slide { flex-basis: 22%; }
+      .why-grid { grid-template-columns: repeat(3, 1fr); }
+      .product-grid { grid-template-columns: repeat(3, 1fr); gap: 1.6rem 1.4rem; }
+      .review-slide { flex-basis: 32%; }
+      .insta-grid { grid-template-columns: repeat(6, 1fr); }
+      .modal-overlay { align-items: center; }
+      .modal-card { border-radius: 24px; display: flex; max-height: 80vh; }
+      .modal-photo { width: 45%; aspect-ratio: auto; }
+      .modal-body { width: 55%; padding: 2rem; }
+    }
+
+    @media (min-width: 980px) {
+      .product-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span>✨ 상담 후 제작 기간 약 1주일</span>
+      <span>✨ 100% 커스텀 수작업</span>
+      <span>✨ 인스타그램 DM으로 편하게 문의해주세요</span>
+      <span>✨ 상담 후 제작 기간 약 1주일</span>
+      <span>✨ 100% 커스텀 수작업</span>
+      <span>✨ 인스타그램 DM으로 편하게 문의해주세요</span>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-link" href="#home">
+        <img src="담음로고.png" alt="담음 로고">
+      </a>
+      <ul class="gnb">
+        <li><a href="#about">브랜드 소개</a></li>
+        <li><a href="#shop">전체 상품</a></li>
+        <li><a href="#faq">자주 묻는 질문</a></li>
+      </ul>
+      <a class="header-ig" href="https://www.instagram.com/tone_of_damum" target="_blank">📷 인스타그램</a>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <img class="hero-badge" src="담음로고.png" alt="담음 dameum 캐릭터 로고">
+    <p class="hero-tagline-en">little things,<br>gently gathered</p>
+    <p class="hero-tagline-kr">당신의 이야기를 소중히 담습니다</p>
+    <p class="hero-desc">모자, 티셔츠, 키링, 폰케이스까지 — 세상에 하나뿐인 나만의 소품을 만나보세요.</p>
+    <div class="hero-actions">
+      <a class="hero-btn solid" href="#shop">상품 둘러보기</a>
+      <a class="hero-btn outline" href="https://www.instagram.com/tone_of_damum" target="_blank">인스타그램 문의</a>
+    </div>
+  </section>
+
+  <section class="cat-nav wrap">
+    <div class="cat-nav-grid">
+      <div class="cat-nav-card" onclick="scrollAndFilter('모자')">
+        <img src="images/hat1.jpg" alt="모자 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="cat-nav-fallback" style="display:none;">🧢</div>
+        <div class="cat-nav-label"><span class="name">모자</span><span class="more">MORE</span></div>
+      </div>
+      <div class="cat-nav-card" onclick="scrollAndFilter('티셔츠')">
+        <img src="images/shirt1.jpg" alt="티셔츠 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="cat-nav-fallback" style="display:none;">👕</div>
+        <div class="cat-nav-label"><span class="name">티셔츠</span><span class="more">MORE</span></div>
+      </div>
+      <div class="cat-nav-card" onclick="scrollAndFilter('키링')">
+        <img src="damum_product_1.png" alt="키링 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="cat-nav-fallback" style="display:none;">🔑</div>
+        <div class="cat-nav-label"><span class="name">키링</span><span class="more">MORE</span></div>
+      </div>
+      <div class="cat-nav-card" onclick="scrollAndFilter('케이스')">
+        <img src="images/case1.jpg" alt="케이스 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="cat-nav-fallback" style="display:none;">📱</div>
+        <div class="cat-nav-label"><span class="name">케이스</span><span class="more">MORE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="top-picks wrap">
+    <span class="section-eyebrow">BEST</span>
+    <h2 class="section-title">당신을 위한 추천 TOP 10</h2>
+    <p class="section-sub">지금 가장 사랑받는 담음의 소품이에요. 사진에 마우스를 올려보세요.</p>
+    <div class="top-slider-wrap">
+      <button class="slider-arrow" onclick="slideTop(-1)" aria-label="이전">‹</button>
+      <div class="top-slider" id="topSlider"></div>
+      <button class="slider-arrow" onclick="slideTop(1)" aria-label="다음">›</button>
+    </div>
+  </section>
+
+  <section class="why wrap" id="about">
+    <span class="section-eyebrow">WHY DAMUM</span>
+    <h2 class="section-title">왜 담음인가요</h2>
+    <p class="section-sub">담음이 매 순간 지키는 세 가지 원칙이에요.</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-num">1</div>
+        <div>
+          <h3>100% 1:1 맞춤 상담</h3>
+          <p>정해진 디자인이 아니라, 원하는 이미지와 이야기를 직접 듣고 시안을 함께 만들어가요.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">2</div>
+        <div>
+          <h3>평균 제작 기간 약 1주일</h3>
+          <p>상담이 확정되면 약 일주일 안에 정성껏 만들어 보내드려요. (주문량에 따라 달라질 수 있어요)</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">3</div>
+        <div>
+          <h3>세상에 하나뿐인 소품</h3>
+          <p>대량생산이 아닌, 한 분 한 분의 이야기를 담아 손으로 직접 제작해드려요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shop-section wrap" id="shop">
+    <span class="section-eyebrow">SHOP</span>
+    <h2 class="section-title">담음의 소품들</h2>
+    <p class="section-sub">마음에 드는 상품을 고르면 자세한 설명을 볼 수 있어요.</p>
+
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-category="전체">전체</button>
+      <button class="filter-btn" data-category="모자">모자</button>
+      <button class="filter-btn" data-category="티셔츠">티셔츠</button>
+      <button class="filter-btn" data-category="키링">키링</button>
+      <button class="filter-btn" data-category="케이스">케이스</button>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+  </section>
+
+  <section class="story">
+    <img class="story-bg" src="damum_2.jpg" alt="">
+    <div class="story-overlay"></div>
+    <div class="story-inner">
+      <h2>담음, 당신의 이야기를<br>담는 공간</h2>
+      <p>'담음'은 '담다'에서 영감을 받은 이름이에요. 반려동물, 좋아하는 캐릭터, 특별한 날의 기억까지 — 당신이 간직하고 싶은 모든 것을 세상에 하나뿐인 소품으로 만들어 드릴게요.</p>
+    </div>
+  </section>
+
+  <section class="faq wrap" id="faq">
+    <span class="section-eyebrow">FAQ</span>
+    <h2 class="section-title">자주 묻는 질문</h2>
+    <p class="section-sub">구매 전에 궁금하신 점을 먼저 확인해보세요.</p>
+    <div class="faq-list" id="faqList"></div>
+  </section>
+
+  <section class="reviews wrap" id="reviews">
+    <span class="section-eyebrow">REVIEW</span>
+    <h2 class="section-title">고객 후기</h2>
+    <p class="section-sub">담음을 먼저 만나본 분들의 이야기예요. (예시 후기입니다)</p>
+    <div class="review-slider-wrap">
+      <button class="slider-arrow" onclick="slideReview(-1)" aria-label="이전">‹</button>
+      <div class="review-slider" id="reviewSlider"></div>
+      <button class="slider-arrow" onclick="slideReview(1)" aria-label="다음">›</button>
+    </div>
+  </section>
+
+  <section class="insta-feed wrap">
+    <span class="section-eyebrow">INSTAGRAM</span>
+    <h2 class="section-title">@tone_of_damum</h2>
+    <p class="section-sub">담음의 최근 소식과 완성작들을 인스타그램에서 만나보세요.</p>
+    <div class="insta-grid">
+      <a class="insta-tile" href="https://www.instagram.com/tone_of_damum" target="_blank">
+        <img src="images/insta1.jpg" alt="인스타그램 사진1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="insta-fallback" style="display:none;">📷</div>
+      </a>
+      <a class="insta-tile" href="https://www.instagram.com/tone_of_damum" target="_blank">
+        <img src="images/insta2.jpg" alt="인스타그램 사진2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="insta-fallback" style="display:none;">📷</div>
+      </a>
+      <a class="insta-tile" href="https://www.instagram.com/tone_of_damum" target="_blank">
+        <img src="images/insta3.jpg" alt="인스타그램 사진3" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="insta-fallback" style="display:none;">📷</div>
+      </a>
+      <a class="insta-tile" href="https://www.instagram.com/tone_of_damum" target="_blank">
+        <img src="images/insta4.jpg" alt="인스타그램 사진4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="insta-fallback" style="display:none;">📷</div>
+      </a>
+      <a class="insta-tile" href="https://www.instagram.com/tone_of_damum" target="_blank">
+        <img src="images/insta5.jpg" alt="인스타그램 사진5" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="insta-fallback" style="display:none;">📷</div>
+      </a>
+      <a class="insta-tile" href="https://www.instagram.com/tone_of_damum" target="_blank">
+        <img src="images/insta6.jpg" alt="인스타그램 사진6" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="insta-fallback" style="display:none;">📷</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-brand">담음 DAMUM</div>
+    <p>당신의 이야기를 소중히 담는 커스텀 소품샵<br>구매 문의 <a href="https://www.instagram.com/tone_of_damum" target="_blank">@tone_of_damum</a></p>
+    <div class="foot-links">
+      <a href="#home">맨 위로</a>
+      <a href="#shop">전체 상품</a>
+      <a href="#faq">자주 묻는 질문</a>
+      <a href="https://www.instagram.com/tone_of_damum" target="_blank">인스타그램</a>
+    </div>
+    <div class="foot-copy">본 페이지에서는 결제가 진행되지 않아요. 모든 주문은 인스타그램 DM을 통해 안내드립니다.<br>© 2025 담음 DAMUM. All rights reserved.</div>
+  </footer>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-photo" id="modalPhoto"></div>
+      <div class="modal-body">
+        <span class="modal-badge" id="modalBadge" style="display:none;"></span>
+        <h2 class="modal-name" id="modalName"></h2>
+        <div class="modal-price" id="modalPrice"></div>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="modal-actions" id="modalActions"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const IG_URL = 'https://www.instagram.com/tone_of_damum';
+
+    // 아래 originalPrice/price는 디자인 확인용 예시 할인가예요. 실제 판매가가 정해지면 꼭 교체해주세요.
+    const PRODUCTS = [
+      { id: 'p1', category: '키링', name: '맞춤 모루인형 키링', originalPrice: '₩7,500', price: '₩6,000', badge: 'BEST', desc: '반려동물이나 좋아하는 캐릭터를 귀여운 모루인형으로 만들어드려요.', img: 'damum_product_1.png' },
+      { id: 'p2', category: '키링', name: '커스텀 아크릴 키링', originalPrice: '₩7,000', price: '₩6,000', badge: '', desc: '선명한 프린팅으로 완성되는 나만의 아크릴 키링이에요.', img: 'damum_product_2.png' },
+      { id: 'p3', category: '키링', name: '스페셜 에디션 키링', price: 'Coming Soon', badge: '', desc: '시즌 한정으로 준비 중인 특별 디자인 키링이에요.', img: 'damum_product_3.png', comingSoon: true },
+      { id: 'p4', category: '모자', name: '자수 커스텀 볼캡', originalPrice: '₩22,000', price: '₩18,000', badge: '예시 상품', desc: '원하는 그림이나 문구를 자수로 새겨드리는 볼캡이에요. (예시 상품입니다)', img: 'images/hat1.jpg' },
+      { id: 'p5', category: '모자', name: '커스텀 버킷햇', originalPrice: '₩24,000', price: '₩20,000', badge: '예시 상품', desc: '포인트 자수를 더한 데일리 버킷햇이에요. (예시 상품입니다)', img: 'images/hat2.jpg' },
+      { id: 'p6', category: '티셔츠', name: '커스텀 반팔 티셔츠', originalPrice: '₩26,000', price: '₩22,000', badge: '예시 상품', desc: '원하는 이미지나 문구를 프린팅한 반팔 티셔츠예요. (예시 상품입니다)', img: 'images/shirt1.jpg' },
+      { id: 'p7', category: '티셔츠', name: '커스텀 맨투맨', originalPrice: '₩38,000', price: '₩32,000', badge: '예시 상품', desc: '포근한 기모 원단에 나만의 디자인을 담은 맨투맨이에요. (예시 상품입니다)', img: 'images/shirt2.jpg' },
+      { id: 'p8', category: '케이스', name: '커스텀 하드케이스', originalPrice: '₩18,000', price: '₩15,000', badge: '예시 상품', desc: '선명한 화질로 원하는 이미지를 인쇄하는 하드케이스예요. (예시 상품입니다)', img: 'images/case1.jpg' },
+      { id: 'p9', category: '케이스', name: '커스텀 젤리케이스', originalPrice: '₩16,000', price: '₩13,000', badge: '예시 상품', desc: '가볍고 말랑한 젤리케이스에 나만의 디자인을 담아드려요. (예시 상품입니다)', img: 'images/case2.jpg' }
+    ];
+
+    function priceHtml(p) {
+      if (p.comingSoon) return 'Coming Soon';
+      if (p.originalPrice) {
+        const orig = parseInt(p.originalPrice.replace(/[^0-9]/g, ''), 10);
+        const sale = parseInt(p.price.replace(/[^0-9]/g, ''), 10);
+        const pct = Math.round((1 - sale / orig) * 100);
+        return `<span class="price-original">${p.originalPrice}</span><span class="price-sale">${p.price}</span><span class="price-percent">${pct}%</span>`;
+      }
+      return `<span class="price-sale">${p.price}</span>`;
+    }
+
+    // 아래는 디자인 확인용 예시 후기예요. 실제 후기가 쌓이면 교체해주세요.
+    // img는 images/review1.jpg ~ review6.jpg 자리표시자예요 (실제 후기 사진으로 교체해주세요).
+    const REVIEWS = [
+      { img: 'images/review1.jpg', emoji: '🐶', name: '김지은', product: '모루인형 키링 구매', stars: 5, content: '제 강아지 말티즈를 모루인형으로 만들어주셨는데, 정말 똑같아서 깜짝 놀랐어요! 친구들한테 자랑하느라 바빴습니다 ㅎㅎ' },
+      { img: 'images/review2.jpg', emoji: '💑', name: '이준혁', product: '커스텀 아크릴 키링 구매', stars: 5, content: '여자친구 생일 선물로 우리 커플 캐릭터 키링을 주문했는데, 완전 감동받았어요. 세상에 하나뿐인 선물이라 더 특별했습니다!' },
+      { img: 'images/review3.jpg', emoji: '🐱', name: '박서연', product: '모루인형 키링 구매', stars: 5, content: '무지개다리를 건넌 우리 고양이를 키링으로 만들어주셨어요. 덕분에 항상 함께하는 기분이에요. 정말 감사합니다 🥹' },
+      { img: 'images/review4.jpg', emoji: '🧢', name: '정하늘', product: '자수 커스텀 볼캡 구매', stars: 5, content: '졸업 사진 속 우리 강아지 얼굴을 자수로 새겨주셨는데 사진보다 더 귀여워요! 매일 쓰고 다녀요.' },
+      { img: 'images/review5.jpg', emoji: '👕', name: '최민아', product: '커스텀 반팔 티셔츠 구매', stars: 4, content: '동아리 단체티로 맞췄는데 다들 만족했어요. 프린팅 상태도 좋고 다음에 또 주문하려고요.' },
+      { img: 'images/review6.jpg', emoji: '📱', name: '서지우', product: '커스텀 하드케이스 구매', stars: 5, content: '매일 들고 다니는 폰케이스라 볼 때마다 기분이 좋아져요. DM으로 소통도 편했습니다!' }
+    ];
+
+    const FAQS = [
+      { q: '제작 기간은 얼마나 걸리나요?', a: '상담 후 약 1주일 정도 소요돼요. 주문량이 많을 때는 조금 더 걸릴 수 있어요.' },
+      { q: '어떻게 주문하나요?', a: '마음에 드는 상품을 골라 인스타그램 DM(@tone_of_damum)으로 편하게 문의해주세요. 원하는 이미지나 이야기를 함께 보내주시면 상담이 더 빨라져요.' },
+      { q: '결제는 어떻게 하나요?', a: '이 페이지에서는 결제가 진행되지 않아요. 인스타그램 DM 상담을 통해 결제 방법을 안내해드려요.' },
+      { q: '교환·환불은 가능한가요?', a: '커스텀 제작 특성상 상품마다 교환·환불 조건이 다를 수 있어요. 자세한 사항은 인스타그램 DM으로 문의해주세요.' }
+    ];
+
+    const CATEGORY_ICON = { '모자': '🧢', '티셔츠': '👕', '키링': '🔑', '케이스': '📱' };
+
+    function renderGrid(filter) {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      const list = filter === '전체' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+      list.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.onclick = () => openModal(p.id);
+        card.innerHTML = `
+          <div class="product-photo">
+            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+            <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="product-fallback" style="display:none;">
+              <span class="icon">${CATEGORY_ICON[p.category] || '🎁'}</span>
+              <span>사진을 넣어주세요</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <p class="product-name">${p.name}</p>
+            <p class="product-price">${priceHtml(p)}</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function setActiveFilter(category) {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.category === category);
+      });
+      renderGrid(category);
+    }
+
+    function scrollAndFilter(category) {
+      setActiveFilter(category);
+      document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.getElementById('filterBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      setActiveFilter(btn.dataset.category);
+    });
+
+    function openModal(id) {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (!p) return;
+
+      document.getElementById('modalPhoto').innerHTML = `
+        <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="modal-fallback" style="display:none;">
+          <span class="icon">${CATEGORY_ICON[p.category] || '🎁'}</span>
+          <span>사진을 넣어주세요</span>
+        </div>
+      `;
+
+      const badgeEl = document.getElementById('modalBadge');
+      if (p.badge) { badgeEl.style.display = 'inline-block'; badgeEl.textContent = p.badge; }
+      else { badgeEl.style.display = 'none'; }
+
+      document.getElementById('modalName').textContent = p.name;
+      document.getElementById('modalPrice').innerHTML = priceHtml(p);
+      document.getElementById('modalDesc').textContent = p.desc;
+
+      const actions = document.getElementById('modalActions');
+      if (p.comingSoon) {
+        actions.innerHTML = `<button class="modal-btn disabled">곧 만나요, 조금만 기다려주세요</button>`;
+      } else {
+        actions.innerHTML = `
+          <a class="modal-btn primary" href="${IG_URL}" target="_blank">📷 인스타그램 DM으로 문의하기</a>
+          <button class="modal-btn secondary" onclick="copyName('${p.name.replace(/'/g, "\\'")}', this)">상품명 복사하기</button>
+        `;
+      }
+
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modalOverlay') closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function copyName(name, btnEl) {
+      const done = () => {
+        const original = btnEl.textContent;
+        btnEl.textContent = '복사됐어요! DM에 붙여넣어주세요';
+        setTimeout(() => { btnEl.textContent = original; }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(name).then(done).catch(done);
+      } else {
+        done();
+      }
+    }
+
+    function renderFaq() {
+      const list = document.getElementById('faqList');
+      list.innerHTML = '';
+      FAQS.forEach((f, i) => {
+        const item = document.createElement('div');
+        item.className = 'faq-item';
+        item.innerHTML = `
+          <button class="faq-q" onclick="toggleFaq(${i})">
+            <span>${f.q}</span>
+            <span class="arrow">⌄</span>
+          </button>
+          <div class="faq-a"><p>${f.a}</p></div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function toggleFaq(index) {
+      const items = document.querySelectorAll('.faq-item');
+      items[index].classList.toggle('open');
+    }
+
+    function renderTopSlider() {
+      const track = document.getElementById('topSlider');
+      const picks = PRODUCTS.filter(p => !p.comingSoon);
+      track.innerHTML = picks.map((p, i) => `
+        <div class="top-slide" onclick="openModal('${p.id}')">
+          <span class="top-slide-rank">${i + 1}</span>
+          <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="top-slide-fallback" style="display:none;">${CATEGORY_ICON[p.category] || '🎁'}</div>
+          <div class="top-slide-hover">
+            <p class="top-slide-name">${p.name}</p>
+            <p class="top-slide-price">${priceHtml(p)}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function slideTop(dir) {
+      const track = document.getElementById('topSlider');
+      const amount = track.clientWidth * 0.85;
+      track.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    }
+
+    function renderReviews() {
+      const track = document.getElementById('reviewSlider');
+      track.innerHTML = REVIEWS.map(r => `
+        <div class="review-slide">
+          <div class="review-photo">
+            <img src="${r.img}" alt="${r.name} 님 후기 사진" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="review-fallback" style="display:none;">${r.emoji}</div>
+          </div>
+          <div class="review-body">
+            <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+            <p class="review-content">${r.content}</p>
+            <div class="review-author">
+              <div class="review-avatar">${r.emoji}</div>
+              <div class="review-author-info">
+                <span class="name">${r.name} 님</span>
+                <span class="product">${r.product}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function slideReview(dir) {
+      const track = document.getElementById('reviewSlider');
+      const amount = track.clientWidth * 0.85;
+      track.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    }
+
+    renderGrid('전체');
+    renderFaq();
+    renderTopSlider();
+    renderReviews();
+  </script>
+</body>
+
+</html>
