@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Poppins:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@600;700&display=swap"
     rel="stylesheet">
   <style>
     :root {
@@ -51,7 +51,7 @@
     html, body { margin: 0; padding: 0; }
 
     body {
-      font-family: 'Gowun Batang', serif;
+      font-family: 'Gowun Dodum', sans-serif;
       background: var(--warm-light);
       color: var(--text);
       line-height: 1.7;
@@ -264,18 +264,19 @@
     }
 
     .cat-nav-label .name {
-      font-family: 'Gowun Dodum', sans-serif;
+      font-family: 'Dancing Script', cursive;
       font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: 0.04em;
+      font-size: clamp(1.7rem, 6vw, 2.3rem);
+      letter-spacing: 0.02em;
     }
 
     .cat-nav-label .more {
-      font-size: 0.68rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.7rem;
       letter-spacing: 0.15em;
       opacity: 0.85;
       border-top: 1px solid rgba(255,255,255,0.6);
-      padding-top: 0.35rem;
+      padding-top: 0.4rem;
     }
 
     /* Top picks slider */
@@ -589,7 +590,7 @@
       background: none;
       border: none;
       text-align: left;
-      font-family: 'Gowun Batang', serif;
+      font-family: 'Gowun Dodum', sans-serif;
       font-size: 0.92rem;
       font-weight: 700;
       color: var(--text);
@@ -806,7 +807,7 @@
       display: flex; align-items: center; justify-content: center; gap: 0.5rem;
       padding: 0.9rem;
       border-radius: 14px;
-      font-family: 'Gowun Batang', serif;
+      font-family: 'Gowun Dodum', sans-serif;
       font-size: 0.92rem;
       text-decoration: none;
       cursor: pointer;
@@ -884,22 +885,22 @@
       <div class="cat-nav-card" onclick="scrollAndFilter('모자')">
         <img src="images/hat1.jpg" alt="모자 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">🧢</div>
-        <div class="cat-nav-label"><span class="name">모자</span><span class="more">MORE</span></div>
+        <div class="cat-nav-label"><span class="name">Hat</span><span class="more">MORE</span></div>
       </div>
       <div class="cat-nav-card" onclick="scrollAndFilter('티셔츠')">
         <img src="images/shirt1.jpg" alt="티셔츠 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">👕</div>
-        <div class="cat-nav-label"><span class="name">티셔츠</span><span class="more">MORE</span></div>
+        <div class="cat-nav-label"><span class="name">T-Shirt</span><span class="more">MORE</span></div>
       </div>
       <div class="cat-nav-card" onclick="scrollAndFilter('키링')">
         <img src="damum_product_1.png" alt="키링 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">🔑</div>
-        <div class="cat-nav-label"><span class="name">키링</span><span class="more">MORE</span></div>
+        <div class="cat-nav-label"><span class="name">Keyring</span><span class="more">MORE</span></div>
       </div>
       <div class="cat-nav-card" onclick="scrollAndFilter('케이스')">
         <img src="images/case1.jpg" alt="케이스 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">📱</div>
-        <div class="cat-nav-label"><span class="name">케이스</span><span class="more">MORE</span></div>
+        <div class="cat-nav-label"><span class="name">Case</span><span class="more">MORE</span></div>
       </div>
     </div>
   </section>
