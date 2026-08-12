@@ -8,6 +8,11 @@
   전체 컬러를 블루톤 → 흑백/그레이 톤으로, 헤딩 폰트를 Nanum Myeongjo → Gowun Dodum으로 교체했습니다.
   사진 자체는 분위기가 너무 무거워지지 않도록 원래 컬러 그대로 보여줘요 (grayscale 필터 제거).
 
+  페이지 구성: index.html(홈, 추천 TOP 10만 노출) · shop.html(전체 상품, 필터/그리드) ·
+  about.html(브랜드 소개) · reviews.html(전체 후기). 네 페이지 모두 헤더/햄버거 메뉴/컬러·폰트를 공유해요.
+  PRODUCTS 배열은 index.html(추천 TOP 10 + 모달용)과 shop.html(전체 그리드용)에 각각 들어있어요 —
+  상품 정보를 바꿀 땐 두 파일 모두 함께 수정해주세요.
+
   이미지 교체 안내 (images 폴더)
   - images/hat1.jpg, hat2.jpg     : 모자 상품 2종
   - images/shirt1.jpg, shirt2.jpg : 티셔츠 상품 2종
@@ -140,6 +145,8 @@
     .gnb a { text-decoration: none; font-size: 0.9rem; color: var(--text); }
     .gnb a:hover { color: var(--accent); }
 
+    .header-right { display: flex; align-items: center; gap: 0.6rem; }
+
     .header-ig {
       display: flex;
       align-items: center;
@@ -156,24 +163,92 @@
 
     .header-ig:hover { background: var(--primary-pale); }
 
-    /* Hero */
-    .hero {
+    .mobile-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      background: var(--white);
+      border-top: 0 solid var(--primary-pale);
+      transition: max-height .3s ease;
+    }
+
+    .mobile-menu.open { max-height: 260px; border-top-width: 1px; }
+
+    .mobile-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0.3rem 1.2rem 0.6rem;
       display: flex;
       flex-direction: column;
+    }
+
+    .mobile-menu li { border-bottom: 1px solid var(--primary-pale); }
+    .mobile-menu li:last-child { border-bottom: none; }
+
+    .mobile-menu a {
+      display: block;
+      padding: 0.9rem 0.2rem;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    @media (min-width: 720px) {
+      .mobile-menu-btn { display: none; }
+      .mobile-menu { display: none; }
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: var(--text);
-      background: var(--warm-light);
-      padding: 3.6rem 1.2rem 3rem;
+      color: var(--white);
+      overflow: hidden;
+      min-height: 60vh;
+      padding: 4rem 1.2rem 3.4rem;
     }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(20,20,20,0.32), rgba(20,20,20,0.58));
+      z-index: 1;
+    }
+
+    .hero-inner { position: relative; z-index: 2; max-width: 520px; }
 
     .hero-badge {
       width: 140px;
       height: 140px;
       object-fit: cover;
       border-radius: 50%;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
       margin-bottom: 1.5rem;
     }
 
@@ -189,13 +264,13 @@
     .hero-tagline-kr {
       font-family: 'Gowun Dodum', sans-serif;
       font-size: 1rem;
-      color: var(--text-light);
+      color: rgba(255,255,255,0.85);
       margin: 0 0 1.1rem;
     }
 
     .hero-desc {
       font-size: 0.92rem;
-      color: var(--text-light);
+      color: rgba(255,255,255,0.85);
       max-width: 420px;
       margin: 0 auto 1.8rem;
     }
@@ -204,16 +279,16 @@
 
     .hero-btn {
       padding: 0.85rem 1.6rem;
-      border-radius: 99px;
+      border-radius: 12px;
       font-size: 0.9rem;
       text-decoration: none;
       transition: all .2s ease;
     }
 
-    .hero-btn.solid { background: var(--text); color: var(--white); }
-    .hero-btn.solid:hover { background: #000; }
-    .hero-btn.outline { border: 1.5px solid var(--text); color: var(--text); }
-    .hero-btn.outline:hover { background: var(--text); color: var(--white); }
+    .hero-btn.solid { background: var(--white); color: var(--text); }
+    .hero-btn.solid:hover { background: var(--primary-pale); }
+    .hero-btn.outline { border: 1.5px solid rgba(255,255,255,0.85); color: var(--white); }
+    .hero-btn.outline:hover { background: rgba(255,255,255,0.15); }
 
     /* Category nav */
     .cat-nav { padding: 3rem 0 1rem; }
@@ -381,180 +456,7 @@
 
     .slider-arrow:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
 
-    /* Why section */
-    .why { padding: 3.4rem 0; }
-
-    .why-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.1rem;
-    }
-
-    .why-card {
-      background: var(--white);
-      border-radius: 18px;
-      padding: 1.4rem;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-
-    .why-num {
-      flex-shrink: 0;
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: var(--primary-pale);
-      color: var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Gowun Dodum', sans-serif;
-      font-weight: 700;
-    }
-
-    .why-card h3 { font-family: 'Gowun Dodum', sans-serif; font-size: 1.02rem; margin: 0 0 0.3rem; }
-    .why-card p { font-size: 0.87rem; color: var(--text-light); margin: 0; line-height: 1.65; }
-
-    /* Filter */
-    .shop-section { padding: 3.4rem 0 1rem; }
-
-    .filter-bar {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 2.4rem;
-      border-bottom: 1px solid var(--primary-pale);
-    }
-
-    .filter-btn {
-      position: relative;
-      border: none;
-      background: none;
-      color: var(--text-light);
-      padding: 0.8rem 1.3rem;
-      border-radius: 0;
-      font-family: 'Gowun Dodum', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: color .2s ease;
-    }
-
-    .filter-btn::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      right: 50%;
-      bottom: -1px;
-      height: 2px;
-      background: var(--accent);
-      transition: left .25s ease, right .25s ease;
-    }
-
-    .filter-btn.active,
-    .filter-btn:hover { color: var(--text); }
-
-    .filter-btn.active::after { left: 8%; right: 8%; }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.1rem;
-      padding-bottom: 3.4rem;
-    }
-
-    .product-card {
-      background: none;
-      cursor: pointer;
-    }
-
-    .product-photo {
-      position: relative;
-      aspect-ratio: 1 / 1;
-      background: var(--primary-pale);
-      overflow: hidden;
-      border-radius: 4px;
-    }
-
-    .product-photo img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform .35s ease;
-    }
-
-    .product-card:hover .product-photo img { transform: scale(1.05); }
-
-    .photo-track {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .photo-track::-webkit-scrollbar { display: none; }
-
-    .photo-slide {
-      position: relative;
-      flex: 0 0 100%;
-      height: 100%;
-      scroll-snap-align: start;
-    }
-
-    .photo-dots {
-      position: absolute;
-      left: 0; right: 0; bottom: 8px;
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      z-index: 2;
-    }
-
-    .photo-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      padding: 0;
-      border: 1px solid rgba(0,0,0,0.15);
-      background: rgba(255,255,255,0.7);
-      cursor: pointer;
-    }
-
-    .photo-dot.active { background: var(--white); box-shadow: 0 0 0 1.5px var(--text); }
-
-    .product-fallback {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 4px;
-      color: var(--text-light);
-      font-size: 11.5px;
-      text-align: center;
-      padding: 10px;
-    }
-
-    .product-fallback .icon { font-size: 22px; opacity: .6; }
-
-    .product-badge {
-      position: absolute;
-      top: 10px; left: 10px;
-      background: var(--white);
-      color: var(--text);
-      border: 1px solid var(--text);
-      font-size: 0.66rem;
-      letter-spacing: 0.05em;
-      padding: 0.22rem 0.55rem;
-      border-radius: 2px;
-      z-index: 1;
-    }
-
-    .product-info { padding: 0.75rem 0.1rem 0; }
-    .product-name { font-family: 'Gowun Dodum', sans-serif; font-weight: 700; font-size: 0.92rem; margin: 0 0 0.35rem; }
-    .product-price { font-size: 0.86rem; }
-
+    /* Price (재사용: 추천 TOP 10, 상품 상세 모달) */
     .price-original {
       text-decoration: line-through;
       color: var(--text-light);
@@ -718,19 +620,25 @@
       margin: 0 0 1rem;
     }
 
-    .review-author { display: flex; align-items: center; gap: 0.7rem; }
-
-    .review-avatar {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      background: var(--primary-pale);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
+    .review-author { display: flex; align-items: center; }
 
     .review-author-info .name { font-weight: 700; font-size: 0.85rem; display: block; }
     .review-author-info .product { font-size: 0.78rem; color: var(--text-light); }
+
+    .see-all-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.6rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1.5px solid var(--text);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 2px;
+    }
 
     /* Instagram feed */
     .insta-feed { padding: 0 0 3.6rem; }
@@ -930,18 +838,12 @@
       .gnb { display: flex; }
       .cat-nav-grid { grid-template-columns: repeat(4, 1fr); }
       .top-slide { flex-basis: 22%; }
-      .why-grid { grid-template-columns: repeat(3, 1fr); }
-      .product-grid { grid-template-columns: repeat(3, 1fr); gap: 1.6rem 1.4rem; }
       .review-slide { flex-basis: 32%; }
       .insta-grid { grid-template-columns: repeat(6, 1fr); }
       .modal-overlay { align-items: center; }
       .modal-card { border-radius: 24px; display: flex; max-height: 80vh; }
       .modal-photo { width: 45%; aspect-ratio: auto; }
       .modal-body { width: 55%; padding: 2rem; }
-    }
-
-    @media (min-width: 980px) {
-      .product-grid { grid-template-columns: repeat(4, 1fr); }
     }
   </style>
 </head>
@@ -965,43 +867,58 @@
         <img src="담음로고.png" alt="담음 로고">
       </a>
       <ul class="gnb">
-        <li><a href="#about">브랜드 소개</a></li>
-        <li><a href="#shop">전체 상품</a></li>
+        <li><a href="about.html">브랜드 소개</a></li>
+        <li><a href="shop.html">전체 상품</a></li>
+        <li><a href="reviews.html">리뷰</a></li>
         <li><a href="#faq">자주 묻는 질문</a></li>
       </ul>
-      <a class="header-ig" href="https://www.instagram.com/tone_of_damum" target="_blank">📷 인스타그램</a>
+      <div class="header-right">
+        <a class="header-ig" href="https://www.instagram.com/tone_of_damum" target="_blank"> INSTAGRAM </a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="메뉴 열기">☰</button>
+      </div>
     </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="about.html">브랜드 소개</a></li>
+        <li><a href="shop.html">전체 상품</a></li>
+        <li><a href="reviews.html">리뷰</a></li>
+        <li><a href="#faq">자주 묻는 질문</a></li>
+      </ul>
+    </nav>
   </header>
 
   <section class="hero" id="home">
-    <img class="hero-badge" src="담음로고.png" alt="담음 dameum 캐릭터 로고">
-    <p class="hero-tagline-en">little things,<br>gently gathered</p>
-    <p class="hero-tagline-kr">당신의 이야기를 소중히 담습니다</p>
-    <p class="hero-desc">모자, 티셔츠, 키링, 폰케이스까지 — 세상에 하나뿐인 나만의 소품을 만나보세요.</p>
-    <div class="hero-actions">
-      <a class="hero-btn solid" href="#shop">상품 둘러보기</a>
-      <a class="hero-btn outline" href="https://www.instagram.com/tone_of_damum" target="_blank">인스타그램 문의</a>
+    <img class="hero-bg" src="damum_1.jpg" alt="">
+    <div class="hero-overlay"></div>
+    <div class="hero-inner">
+      <p class="hero-tagline-en">little things,<br>gently gathered</p>
+      <p class="hero-tagline-kr">당신의 이야기를 소중히 담습니다</p>
+      <p class="hero-desc">모자, 티셔츠, 키링, 폰케이스까지 — 세상에 하나뿐인 나만의 소품을 만나보세요.</p>
+      <div class="hero-actions">
+        <a class="hero-btn solid" href="shop.html">상품 둘러보기</a>
+        <a class="hero-btn outline" href="https://www.instagram.com/tone_of_damum" target="_blank">인스타그램 문의</a>
+      </div>
     </div>
   </section>
 
   <section class="cat-nav wrap">
     <div class="cat-nav-grid">
-      <div class="cat-nav-card" onclick="scrollAndFilter('모자')">
+      <div class="cat-nav-card" onclick="goToShop('모자')">
         <img src="images/hat1-1.jpg" alt="모자 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">🧢</div>
         <div class="cat-nav-label"><span class="name">Hat</span><span class="more">MORE</span></div>
       </div>
-      <div class="cat-nav-card" onclick="scrollAndFilter('티셔츠')">
+      <div class="cat-nav-card" onclick="goToShop('티셔츠')">
         <img src="images/t1-1.jpg" alt="티셔츠 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">👕</div>
         <div class="cat-nav-label"><span class="name">T-Shirt</span><span class="more">MORE</span></div>
       </div>
-      <div class="cat-nav-card" onclick="scrollAndFilter('키링')">
+      <div class="cat-nav-card" onclick="goToShop('키링')">
         <img src="images/kiring1-1.jpg" alt="키링 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">🔑</div>
         <div class="cat-nav-label"><span class="name">Keyring</span><span class="more">MORE</span></div>
       </div>
-      <div class="cat-nav-card" onclick="scrollAndFilter('케이스')">
+      <div class="cat-nav-card" onclick="goToShop('케이스')">
         <img src="images/case1-1.png" alt="케이스 카테고리" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="cat-nav-fallback" style="display:none;">📱</div>
         <div class="cat-nav-label"><span class="name">Case</span><span class="more">MORE</span></div>
@@ -1018,54 +935,10 @@
       <div class="top-slider" id="topSlider"></div>
       <button class="slider-arrow" onclick="slideTop(1)" aria-label="다음">›</button>
     </div>
+    <a class="see-all-link" href="shop.html">전체 상품 보기 →</a>
   </section>
 
-  <section class="why wrap" id="about">
-    <span class="section-eyebrow">WHY DAMUM</span>
-    <h2 class="section-title">왜 담음인가요</h2>
-    <p class="section-sub">담음이 매 순간 지키는 세 가지 원칙이에요.</p>
-    <div class="why-grid">
-      <div class="why-card">
-        <div class="why-num">1</div>
-        <div>
-          <h3>100% 1:1 맞춤 상담</h3>
-          <p>정해진 디자인이 아니라, 원하는 이미지와 이야기를 직접 듣고 시안을 함께 만들어가요.</p>
-        </div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">2</div>
-        <div>
-          <h3>평균 제작 기간 약 1주일</h3>
-          <p>상담이 확정되면 약 일주일 안에 정성껏 만들어 보내드려요. (주문량에 따라 달라질 수 있어요)</p>
-        </div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">3</div>
-        <div>
-          <h3>세상에 하나뿐인 소품</h3>
-          <p>대량생산이 아닌, 한 분 한 분의 이야기를 담아 손으로 직접 제작해드려요.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="shop-section wrap" id="shop">
-    <span class="section-eyebrow">SHOP</span>
-    <h2 class="section-title">담음의 소품들</h2>
-    <p class="section-sub">마음에 드는 상품을 고르면 자세한 설명을 볼 수 있어요.</p>
-
-    <div class="filter-bar" id="filterBar">
-      <button class="filter-btn active" data-category="전체">전체</button>
-      <button class="filter-btn" data-category="모자">모자</button>
-      <button class="filter-btn" data-category="티셔츠">티셔츠</button>
-      <button class="filter-btn" data-category="키링">키링</button>
-      <button class="filter-btn" data-category="케이스">케이스</button>
-    </div>
-
-    <div class="product-grid" id="productGrid"></div>
-  </section>
-
-  <section class="story">
+  <section class="story" id="about">
     <img class="story-bg" src="damum_2.jpg" alt="">
     <div class="story-overlay"></div>
     <div class="story-inner">
@@ -1090,6 +963,7 @@
       <div class="review-slider" id="reviewSlider"></div>
       <button class="slider-arrow" onclick="slideReview(1)" aria-label="다음">›</button>
     </div>
+    <a class="see-all-link" href="reviews.html">전체 후기 보기 →</a>
   </section>
 
   <section class="insta-feed wrap">
@@ -1129,7 +1003,9 @@
     <p>당신의 이야기를 소중히 담는 커스텀 소품샵<br>구매 문의 <a href="https://www.instagram.com/tone_of_damum" target="_blank">@tone_of_damum</a></p>
     <div class="foot-links">
       <a href="#home">맨 위로</a>
-      <a href="#shop">전체 상품</a>
+      <a href="about.html">브랜드 소개</a>
+      <a href="shop.html">전체 상품</a>
+      <a href="reviews.html">리뷰</a>
       <a href="#faq">자주 묻는 질문</a>
       <a href="https://www.instagram.com/tone_of_damum" target="_blank">인스타그램</a>
     </div>
@@ -1151,6 +1027,16 @@
   </div>
 
   <script>
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    document.querySelectorAll('.mobile-menu a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.remove('open');
+      });
+    });
+
     const IG_URL = 'https://www.instagram.com/tone_of_damum';
 
     // 아래 originalPrice/price는 디자인 확인용 예시 할인가예요. 실제 판매가가 정해지면 꼭 교체해주세요.
@@ -1232,47 +1118,9 @@
       });
     }
 
-    function renderGrid(filter) {
-      const grid = document.getElementById('productGrid');
-      grid.innerHTML = '';
-      const list = filter === '전체' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
-      list.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.onclick = () => openModal(p.id);
-        card.innerHTML = `
-          <div class="product-photo">
-            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
-            <div class="photo-track">${photoSlidesHtml(p.images, p.name, p.category, 'photo-slide', 'product-fallback')}</div>
-            ${photoDotsHtml(p.images, 'photo-dot')}
-          </div>
-          <div class="product-info">
-            <p class="product-name">${p.name}</p>
-            <p class="product-price">${priceHtml(p)}</p>
-          </div>
-        `;
-        grid.appendChild(card);
-        wirePhotoTrack(card.querySelector('.photo-track'), card.querySelectorAll('.photo-dot'));
-      });
+    function goToShop(category) {
+      window.location.href = 'shop.html?cat=' + encodeURIComponent(category);
     }
-
-    function setActiveFilter(category) {
-      document.querySelectorAll('.filter-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.category === category);
-      });
-      renderGrid(category);
-    }
-
-    function scrollAndFilter(category) {
-      setActiveFilter(category);
-      document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    document.getElementById('filterBar').addEventListener('click', (e) => {
-      const btn = e.target.closest('.filter-btn');
-      if (!btn) return;
-      setActiveFilter(btn.dataset.category);
-    });
 
     function openModal(id) {
       const p = PRODUCTS.find(x => x.id === id);
@@ -1404,7 +1252,6 @@
             <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
             <p class="review-content">${r.content}</p>
             <div class="review-author">
-              <div class="review-avatar">${r.emoji}</div>
               <div class="review-author-info">
                 <span class="name">${r.name} 님</span>
                 <span class="product">${r.product}</span>
@@ -1421,7 +1268,6 @@
       track.scrollBy({ left: dir * amount, behavior: 'smooth' });
     }
 
-    renderGrid('전체');
     renderFaq();
     renderTopSlider();
     renderReviews();

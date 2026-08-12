@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<!--
+  전체 상품 페이지 - index.html/about.html/reviews.html과 같은 디자인 시스템(색상/폰트/헤더/햄버거 메뉴)을 공유해요.
+  index.html에 있던 상품 필터+그리드+상세 모달을 그대로 이 페이지로 옮겨왔고,
+  index.html의 카테고리 카드/추천 TOP 10에서 상품을 누르면 이 페이지로 연결돼요.
+  (URL에 ?cat=모자 처럼 붙으면 해당 카테고리가 자동으로 선택된 채로 열려요)
+
+  이미지 교체 안내 (images 폴더)
+  - images/hat1.jpg, hat2.jpg     : 모자 상품 2종
+  - images/shirt1.jpg, shirt2.jpg : 티셔츠 상품 2종
+  - images/case1.jpg, case2.jpg   : 폰케이스 상품 2종
+  - images/p1-2.jpg ~ p9-3.jpg : 상품별 추가 사진(2번째, 3번째) 자리예요. 2장 이상 채우면
+    상품 카드/상세 모달에서 자동으로 옆으로 슬라이드하는 갤러리가 돼요.
+  (키링 3종의 첫 번째 사진은 이미 있는 실제 사진을 쓰고 있어요: damum_product_1~3.png)
+
+  상품/문구 교체 안내
+  하단 <script>의 PRODUCTS 배열에서 내용을 바로 수정할 수 있어요.
+  originalPrice/price(할인가)는 디자인 확인용 샘플 데이터예요. 실제 판매가가 정해지면 꼭 교체해주세요.
+-->
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>전체 상품 | 담음 DAMUM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1A1A1A;
+      --primary-light: #D9D6CF;
+      --primary-pale: #F2F0EC;
+      --accent: #1A1A1A;
+      --warm: #ECE9E3;
+      --warm-light: #FAFAF8;
+      --text: #1F1F1F;
+      --text-light: #767676;
+      --white: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Gowun Dodum', sans-serif;
+      background: var(--warm-light);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.2rem; }
+
+    .section-eyebrow {
+      display: block;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-family: 'Gowun Dodum', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      text-align: center;
+      margin: 0 0 0.6rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      max-width: 460px;
+      margin: 0 auto 1.4rem;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(250, 250, 248, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--primary-pale);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.85rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-link { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-link img { height: 34px; width: 34px; object-fit: cover; border-radius: 50%; }
+
+    .gnb { display: none; gap: 1.8rem; list-style: none; margin: 0; padding: 0; }
+    .gnb a { text-decoration: none; font-size: 0.9rem; color: var(--text); }
+    .gnb a:hover { color: var(--accent); }
+    .gnb a.current { color: var(--accent); font-weight: 700; }
+
+    .header-right { display: flex; align-items: center; gap: 0.6rem; }
+
+    .header-ig {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      color: var(--accent);
+      border: 1.5px solid var(--primary-light);
+      padding: 0.45rem 0.85rem;
+      border-radius: 99px;
+      transition: background .2s ease;
+      white-space: nowrap;
+    }
+
+    .header-ig:hover { background: var(--primary-pale); }
+
+    .mobile-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      background: var(--white);
+      border-top: 0 solid var(--primary-pale);
+      transition: max-height .3s ease;
+    }
+
+    .mobile-menu.open { max-height: 300px; border-top-width: 1px; }
+
+    .mobile-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0.3rem 1.2rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-menu li { border-bottom: 1px solid var(--primary-pale); }
+    .mobile-menu li:last-child { border-bottom: none; }
+
+    .mobile-menu a {
+      display: block;
+      padding: 0.9rem 0.2rem;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    @media (min-width: 720px) {
+      .mobile-menu-btn { display: none; }
+      .mobile-menu { display: none; }
+    }
+
+    /* Intro */
+    .intro { padding: 3rem 0 1rem; }
+
+    /* Filter */
+    .filter-bar {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2.4rem;
+      border-bottom: 1px solid var(--primary-pale);
+    }
+
+    .filter-btn {
+      position: relative;
+      border: none;
+      background: none;
+      color: var(--text-light);
+      padding: 0.8rem 1.3rem;
+      border-radius: 0;
+      font-family: 'Gowun Dodum', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: color .2s ease;
+    }
+
+    .filter-btn::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      right: 50%;
+      bottom: -1px;
+      height: 2px;
+      background: var(--accent);
+      transition: left .25s ease, right .25s ease;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover { color: var(--text); }
+
+    .filter-btn.active::after { left: 8%; right: 8%; }
+
+    /* Product grid */
+    .shop-section { padding: 0 0 4rem; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1rem;
+    }
+
+    .product-card { background: none; cursor: pointer; }
+
+    .product-photo {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: var(--primary-pale);
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .product-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s ease;
+    }
+
+    .product-card:hover .product-photo img { transform: scale(1.05); }
+
+    .photo-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .photo-track::-webkit-scrollbar { display: none; }
+
+    .photo-slide {
+      position: relative;
+      flex: 0 0 100%;
+      height: 100%;
+      scroll-snap-align: start;
+    }
+
+    .photo-dots {
+      position: absolute;
+      left: 0; right: 0; bottom: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      z-index: 2;
+    }
+
+    .photo-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      padding: 0;
+      border: 1px solid rgba(0,0,0,0.15);
+      background: rgba(255,255,255,0.7);
+      cursor: pointer;
+    }
+
+    .photo-dot.active { background: var(--white); box-shadow: 0 0 0 1.5px var(--text); }
+
+    .product-fallback {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px;
+      color: var(--text-light);
+      font-size: 11.5px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .product-fallback .icon { font-size: 22px; opacity: .6; }
+
+    .product-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: var(--white);
+      color: var(--text);
+      border: 1px solid var(--text);
+      font-size: 0.66rem;
+      letter-spacing: 0.05em;
+      padding: 0.22rem 0.55rem;
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .product-info { padding: 0.75rem 0.1rem 0; }
+    .product-name { font-family: 'Gowun Dodum', sans-serif; font-weight: 700; font-size: 0.92rem; margin: 0 0 0.35rem; }
+    .product-price { font-size: 0.86rem; }
+
+    .price-original {
+      text-decoration: line-through;
+      color: var(--text-light);
+      font-size: 0.82em;
+      margin-right: 0.4em;
+    }
+
+    .price-sale { color: var(--text); font-weight: 700; }
+    .price-percent {
+      display: inline-block;
+      background: var(--text);
+      color: var(--white);
+      font-size: 0.72em;
+      font-weight: 600;
+      padding: 0.1em 0.45em;
+      border-radius: 2px;
+      margin-left: 0.4em;
+      vertical-align: 1px;
+    }
+
+    /* Modal (product detail) */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(58, 58, 58, 0.55);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: var(--white);
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      overflow-y: auto;
+      border-radius: 24px 24px 0 0;
+      position: relative;
+      animation: slideUp .3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      font-size: 18px;
+      color: var(--text);
+      cursor: pointer;
+      z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .modal-photo { position: relative; width: 100%; aspect-ratio: 1 / 1; background: var(--primary-pale); overflow: hidden; }
+    .modal-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .modal-photo-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .modal-photo-track::-webkit-scrollbar { display: none; }
+
+    .modal-photo-slide {
+      position: relative;
+      flex: 0 0 100%;
+      height: 100%;
+      scroll-snap-align: start;
+    }
+
+    .modal-photo-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s ease;
+    }
+
+    .modal-photo-arrow:hover { background: var(--white); }
+    .modal-photo-arrow.prev { left: 10px; }
+    .modal-photo-arrow.next { right: 10px; }
+
+    .modal-photo-dots {
+      position: absolute;
+      left: 0; right: 0; bottom: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 3;
+    }
+
+    .modal-photo-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      padding: 0;
+      border: 1px solid rgba(0,0,0,0.15);
+      background: rgba(255,255,255,0.7);
+      cursor: pointer;
+    }
+
+    .modal-photo-dot.active { background: var(--white); box-shadow: 0 0 0 1.5px var(--text); }
+
+    .modal-fallback {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px;
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    .modal-fallback .icon { font-size: 32px; opacity: .6; }
+
+    .modal-body { padding: 1.4rem 1.4rem 1.8rem; }
+
+    .modal-badge {
+      display: inline-block;
+      background: var(--primary-pale);
+      color: var(--accent);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 99px;
+      margin-bottom: 0.6rem;
+    }
+
+    .modal-name { font-family: 'Gowun Dodum', sans-serif; font-weight: 700; font-size: 1.25rem; margin: 0 0 0.3rem; }
+    .modal-price { color: var(--accent); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.8rem; }
+    .modal-desc { color: var(--text-light); font-size: 0.9rem; line-height: 1.75; margin-bottom: 1.4rem; }
+    .modal-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .modal-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.9rem;
+      border-radius: 14px;
+      font-family: 'Gowun Dodum', sans-serif;
+      font-size: 0.92rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+
+    .modal-btn:active { transform: scale(.98); }
+    .modal-btn.primary { background: var(--text); color: var(--white); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22); }
+    .modal-btn.primary:hover { background: #000; }
+    .modal-btn.secondary { background: var(--primary-pale); color: var(--accent); }
+    .modal-btn.disabled { background: var(--warm); color: var(--text-light); pointer-events: none; }
+
+    /* Footer */
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+      padding: 2.6rem 1.2rem 1.6rem;
+      font-size: 0.85rem;
+    }
+
+    footer .foot-brand { font-family: 'Gowun Dodum', sans-serif; font-size: 1.05rem; color: var(--white); margin-bottom: 0.5rem; }
+    footer a { color: var(--primary-light); text-decoration: none; }
+    footer .foot-links { margin: 1rem 0; display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; font-size: 0.82rem; }
+    footer .foot-copy { margin-top: 1.4rem; opacity: 0.55; font-size: 0.75rem; }
+
+    /* Desktop */
+    @media (min-width: 720px) {
+      .gnb { display: flex; }
+      .product-grid { grid-template-columns: repeat(3, 1fr); gap: 1.6rem 1.4rem; }
+      .modal-overlay { align-items: center; }
+      .modal-card { border-radius: 24px; display: flex; max-height: 80vh; }
+      .modal-photo { width: 45%; aspect-ratio: auto; }
+      .modal-body { width: 55%; padding: 2rem; }
+    }
+
+    @media (min-width: 980px) {
+      .product-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo-link" href="index.html">
+        <img src="담음로고.png" alt="담음 로고">
+      </a>
+      <ul class="gnb">
+        <li><a href="about.html">브랜드 소개</a></li>
+        <li><a class="current" href="shop.html">전체 상품</a></li>
+        <li><a href="reviews.html">리뷰</a></li>
+        <li><a href="index.html#faq">자주 묻는 질문</a></li>
+      </ul>
+      <div class="header-right">
+        <a class="header-ig" href="https://www.instagram.com/tone_of_damum" target="_blank"> INSTAGRAM </a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="메뉴 열기">☰</button>
+      </div>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="about.html">브랜드 소개</a></li>
+        <li><a href="shop.html">전체 상품</a></li>
+        <li><a href="reviews.html">리뷰</a></li>
+        <li><a href="index.html#faq">자주 묻는 질문</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="intro wrap">
+    <span class="section-eyebrow">SHOP</span>
+    <h2 class="section-title">담음의 소품들</h2>
+    <p class="section-sub">마음에 드는 상품을 고르면 자세한 설명을 볼 수 있어요.</p>
+  </section>
+
+  <section class="wrap">
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-category="전체">전체</button>
+      <button class="filter-btn" data-category="모자">모자</button>
+      <button class="filter-btn" data-category="티셔츠">티셔츠</button>
+      <button class="filter-btn" data-category="키링">키링</button>
+      <button class="filter-btn" data-category="케이스">케이스</button>
+    </div>
+
+    <div class="shop-section">
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-brand">담음 DAMUM</div>
+    <p>당신의 이야기를 소중히 담는 커스텀 소품샵<br>구매 문의 <a href="https://www.instagram.com/tone_of_damum" target="_blank">@tone_of_damum</a></p>
+    <div class="foot-links">
+      <a href="index.html">홈</a>
+      <a href="about.html">브랜드 소개</a>
+      <a href="reviews.html">리뷰</a>
+      <a href="index.html#faq">자주 묻는 질문</a>
+      <a href="https://www.instagram.com/tone_of_damum" target="_blank">인스타그램</a>
+    </div>
+    <div class="foot-copy">본 페이지에서는 결제가 진행되지 않아요. 모든 주문은 인스타그램 DM을 통해 안내드립니다.<br>© 2025 담음 DAMUM. All rights reserved.</div>
+  </footer>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-photo" id="modalPhoto"></div>
+      <div class="modal-body">
+        <span class="modal-badge" id="modalBadge" style="display:none;"></span>
+        <h2 class="modal-name" id="modalName"></h2>
+        <div class="modal-price" id="modalPrice"></div>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="modal-actions" id="modalActions"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    document.querySelectorAll('.mobile-menu a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.remove('open');
+      });
+    });
+
+    const IG_URL = 'https://www.instagram.com/tone_of_damum';
+
+    // 아래 originalPrice/price는 디자인 확인용 예시 할인가예요. 실제 판매가가 정해지면 꼭 교체해주세요.
+    // images는 상품 사진 배열이에요. 1~3장까지 넣을 수 있고, 여러 장이면 자동으로 옆으로 슬라이드하는 갤러리가 돼요.
+    const PRODUCTS = [
+      { id: 'p1', category: '키링', name: '맞춤 모루인형 키링', originalPrice: '₩7,500', price: '₩6,000', badge: 'BEST', desc: '반려동물이나 좋아하는 캐릭터를 귀여운 모루인형으로 만들어드려요.', images: ['damum_product_1.png', 'images/p1-2.jpg', 'images/p1-3.jpg'] },
+      { id: 'p2', category: '키링', name: '커스텀 아크릴 키링', originalPrice: '₩7,000', price: '₩6,000', badge: '', desc: '선명한 프린팅으로 완성되는 나만의 아크릴 키링이에요.', images: ['damum_product_2.png', 'images/p2-2.jpg', 'images/p2-3.jpg'] },
+      { id: 'p3', category: '키링', name: '스페셜 에디션 키링', price: 'Coming Soon', badge: '', desc: '시즌 한정으로 준비 중인 특별 디자인 키링이에요.', images: ['damum_product_3.png', 'images/p3-2.jpg', 'images/p3-3.jpg'], comingSoon: true },
+      { id: 'p4', category: '모자', name: '자수 커스텀 볼캡', originalPrice: '₩22,000', price: '₩18,000', badge: '예시 상품', desc: '원하는 그림이나 문구를 자수로 새겨드리는 볼캡이에요. (예시 상품입니다)', images: ['images/hat1.jpg', 'images/p4-2.jpg', 'images/p4-3.jpg'] },
+      { id: 'p5', category: '모자', name: '커스텀 버킷햇', originalPrice: '₩24,000', price: '₩20,000', badge: '예시 상품', desc: '포인트 자수를 더한 데일리 버킷햇이에요. (예시 상품입니다)', images: ['images/hat2.jpg', 'images/p5-2.jpg', 'images/p5-3.jpg'] },
+      { id: 'p6', category: '티셔츠', name: '커스텀 반팔 티셔츠', originalPrice: '₩26,000', price: '₩22,000', badge: '예시 상품', desc: '원하는 이미지나 문구를 프린팅한 반팔 티셔츠예요. (예시 상품입니다)', images: ['images/shirt1.jpg', 'images/p6-2.jpg', 'images/p6-3.jpg'] },
+      { id: 'p7', category: '티셔츠', name: '커스텀 맨투맨', originalPrice: '₩38,000', price: '₩32,000', badge: '예시 상품', desc: '포근한 기모 원단에 나만의 디자인을 담은 맨투맨이에요. (예시 상품입니다)', images: ['images/shirt2.jpg', 'images/p7-2.jpg', 'images/p7-3.jpg'] },
+      { id: 'p8', category: '케이스', name: '커스텀 하드케이스', originalPrice: '₩18,000', price: '₩15,000', badge: '예시 상품', desc: '선명한 화질로 원하는 이미지를 인쇄하는 하드케이스예요. (예시 상품입니다)', images: ['images/case1.jpg', 'images/p8-2.jpg', 'images/p8-3.jpg'] },
+      { id: 'p9', category: '케이스', name: '커스텀 젤리케이스', originalPrice: '₩16,000', price: '₩13,000', badge: '예시 상품', desc: '가볍고 말랑한 젤리케이스에 나만의 디자인을 담아드려요. (예시 상품입니다)', images: ['images/case2.jpg', 'images/p9-2.jpg', 'images/p9-3.jpg'] }
+    ];
+
+    function priceHtml(p) {
+      if (p.comingSoon) return 'Coming Soon';
+      if (p.originalPrice) {
+        const orig = parseInt(p.originalPrice.replace(/[^0-9]/g, ''), 10);
+        const sale = parseInt(p.price.replace(/[^0-9]/g, ''), 10);
+        const pct = Math.round((1 - sale / orig) * 100);
+        return `<span class="price-original">${p.originalPrice}</span><span class="price-sale">${p.price}</span><span class="price-percent">${pct}%</span>`;
+      }
+      return `<span class="price-sale">${p.price}</span>`;
+    }
+
+    const CATEGORY_ICON = { '모자': '🧢', '티셔츠': '👕', '키링': '🔑', '케이스': '📱' };
+
+    function photoSlidesHtml(images, name, category, slideClass, fallbackClass) {
+      return images.map((src, i) => `
+        <div class="${slideClass}">
+          <img src="${src}" alt="${name} 사진 ${i + 1}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="${fallbackClass}" style="display:none;">
+            <span class="icon">${CATEGORY_ICON[category] || '🎁'}</span>
+            <span>사진을 넣어주세요</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function photoDotsHtml(images, dotClass) {
+      if (images.length < 2) return '';
+      return `<div class="${dotClass}s">${images.map((_, i) => `<button class="${dotClass}${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="사진 ${i + 1}"></button>`).join('')}</div>`;
+    }
+
+    // 트랙(가로 스크롤 영역)과 점 인디케이터를 서로 연결해요: 점을 누르면 해당 사진으로 이동하고,
+    // 스와이프해서 사진이 바뀌면 점도 자동으로 따라 움직여요.
+    function wirePhotoTrack(track, dots) {
+      if (!track || dots.length === 0) return;
+      dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(dot.dataset.idx, 10);
+          track.scrollTo({ left: track.clientWidth * idx, behavior: 'smooth' });
+        });
+      });
+      track.addEventListener('scroll', () => {
+        const idx = Math.round(track.scrollLeft / track.clientWidth);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      });
+    }
+
+    function renderGrid(filter) {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      const list = filter === '전체' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+      list.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.onclick = () => openModal(p.id);
+        card.innerHTML = `
+          <div class="product-photo">
+            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+            <div class="photo-track">${photoSlidesHtml(p.images, p.name, p.category, 'photo-slide', 'product-fallback')}</div>
+            ${photoDotsHtml(p.images, 'photo-dot')}
+          </div>
+          <div class="product-info">
+            <p class="product-name">${p.name}</p>
+            <p class="product-price">${priceHtml(p)}</p>
+          </div>
+        `;
+        grid.appendChild(card);
+        wirePhotoTrack(card.querySelector('.photo-track'), card.querySelectorAll('.photo-dot'));
+      });
+    }
+
+    function setActiveFilter(category) {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.category === category);
+      });
+      renderGrid(category);
+    }
+
+    document.getElementById('filterBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      setActiveFilter(btn.dataset.category);
+    });
+
+    function openModal(id) {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (!p) return;
+
+      const modalPhoto = document.getElementById('modalPhoto');
+      const multiPhoto = p.images.length > 1;
+      modalPhoto.innerHTML = `
+        <div class="modal-photo-track">${photoSlidesHtml(p.images, p.name, p.category, 'modal-photo-slide', 'modal-fallback')}</div>
+        ${multiPhoto ? `
+          <button class="modal-photo-arrow prev" data-dir="-1" aria-label="이전 사진">‹</button>
+          <button class="modal-photo-arrow next" data-dir="1" aria-label="다음 사진">›</button>
+        ` : ''}
+        ${photoDotsHtml(p.images, 'modal-photo-dot')}
+      `;
+      const modalTrack = modalPhoto.querySelector('.modal-photo-track');
+      wirePhotoTrack(modalTrack, modalPhoto.querySelectorAll('.modal-photo-dot'));
+      modalPhoto.querySelectorAll('.modal-photo-arrow').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          modalTrack.scrollBy({ left: modalTrack.clientWidth * parseInt(btn.dataset.dir, 10), behavior: 'smooth' });
+        });
+      });
+
+      const badgeEl = document.getElementById('modalBadge');
+      if (p.badge) { badgeEl.style.display = 'inline-block'; badgeEl.textContent = p.badge; }
+      else { badgeEl.style.display = 'none'; }
+
+      document.getElementById('modalName').textContent = p.name;
+      document.getElementById('modalPrice').innerHTML = priceHtml(p);
+      document.getElementById('modalDesc').textContent = p.desc;
+
+      const actions = document.getElementById('modalActions');
+      if (p.comingSoon) {
+        actions.innerHTML = `<button class="modal-btn disabled">곧 만나요, 조금만 기다려주세요</button>`;
+      } else {
+        actions.innerHTML = `
+          <a class="modal-btn primary" href="${IG_URL}" target="_blank">📷 인스타그램 DM으로 문의하기</a>
+          <button class="modal-btn secondary" onclick="copyName('${p.name.replace(/'/g, "\\'")}', this)">상품명 복사하기</button>
+        `;
+      }
+
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modalOverlay') closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+      if (!document.getElementById('modalOverlay').classList.contains('open')) return;
+      const modalTrack = document.querySelector('#modalPhoto .modal-photo-track');
+      if (!modalTrack) return;
+      if (e.key === 'ArrowRight') modalTrack.scrollBy({ left: modalTrack.clientWidth, behavior: 'smooth' });
+      if (e.key === 'ArrowLeft') modalTrack.scrollBy({ left: -modalTrack.clientWidth, behavior: 'smooth' });
+    });
+
+    function copyName(name, btnEl) {
+      const done = () => {
+        const original = btnEl.textContent;
+        btnEl.textContent = '복사됐어요! DM에 붙여넣어주세요';
+        setTimeout(() => { btnEl.textContent = original; }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(name).then(done).catch(done);
+      } else {
+        done();
+      }
+    }
+
+    // index.html의 카테고리 카드에서 ?cat=모자 처럼 넘어오면 해당 카테고리로 바로 필터링해요.
+    const initialCategory = new URLSearchParams(window.location.search).get('cat') || '전체';
+    setActiveFilter(initialCategory);
+  </script>
+</body>
+
+</html>
