@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>브랜드 소개 | 담음 DAMUM</title>
+<link rel="icon" href="logo.png">
+<style>
+  :root{
+    --blue-900:#2b3a4d;
+    --blue-700:#5b7597;
+    --blue-500:#8fa6c2;
+    --blue-300:#b9c9dd;
+    --blue-100:#dde6f0;
+    --blue-50:#f3f6fa;
+    --ink:#1c2430;
+    --paper:#ffffff;
+    --line:#e7ecf3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.5;
+  }
+  img{max-width:100%;display:block;}
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  section{padding:80px 0;}
+  h2.section-title{
+    text-align:center;font-size:28px;font-weight:700;margin-bottom:44px;
+    letter-spacing:-0.02em;
+  }
+
+  /* ---------- Header (shared) ---------- */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    max-width:1200px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{display:flex;align-items:center;gap:8px;}
+  .brand img{width:38px;height:38px;object-fit:cover;border-radius:50%;}
+  .brand .brand-text{display:flex;flex-direction:column;line-height:1.1;}
+  .brand .brand-text b{font-size:18px;letter-spacing:0.06em;}
+  .brand .brand-text span{font-size:10px;color:var(--blue-700);letter-spacing:0.08em;}
+  .menu{display:flex;gap:36px;font-size:14px;font-weight:600;color:var(--blue-900);}
+  .menu a{position:relative;padding:4px 0;}
+  .menu a:hover{color:var(--blue-700);}
+  .menu a.active{color:var(--blue-700);}
+  .menu a.active::after{
+    content:"";position:absolute;left:0;right:0;bottom:-14px;height:2px;background:var(--blue-700);
+  }
+  .icons{display:flex;gap:20px;align-items:center;}
+  .icons button{background:none;border:none;cursor:pointer;color:var(--ink);}
+  .btn{
+    padding:14px 26px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;
+    border:1px solid var(--ink);transition:all .15s ease;display:inline-block;
+  }
+  .btn-dark{background:var(--ink);color:#fff;}
+  .btn-dark:hover{background:var(--blue-900);}
+  .btn-light{background:#fff;color:var(--ink);}
+  .btn-light:hover{background:var(--blue-50);}
+
+  /* ---------- Page banner ---------- */
+  .page-banner{
+    background:linear-gradient(180deg,var(--blue-50) 0%, #ffffff 100%);
+    padding:56px 0 40px;
+    text-align:center;
+  }
+  .breadcrumb{font-size:12px;color:var(--blue-700);font-weight:700;margin-bottom:14px;letter-spacing:0.04em;}
+  .page-banner h1{font-size:34px;font-weight:800;letter-spacing:-0.02em;margin-bottom:10px;}
+  .page-banner p{font-size:14px;color:#666;}
+
+  /* ---------- Intro hero ---------- */
+  .intro .wrap{display:flex;align-items:center;gap:56px;}
+  .intro-text{flex:1;min-width:300px;}
+  .intro-text .eyebrow{font-size:12px;font-weight:700;color:var(--blue-700);letter-spacing:0.06em;margin-bottom:14px;}
+  .intro-text h2{font-size:30px;font-weight:800;line-height:1.4;margin-bottom:20px;letter-spacing:-0.02em;}
+  .intro-text h2 span{color:var(--blue-700);}
+  .intro-text p{font-size:14px;color:#555;margin-bottom:16px;}
+  .intro-visual{flex:1;min-width:300px;}
+  .intro-visual .frame{
+    border-radius:20px;overflow:hidden;aspect-ratio:4/5;
+    box-shadow:0 16px 32px -16px rgba(43,58,77,0.35);
+  }
+  .intro-visual .frame img{width:100%;height:100%;object-fit:cover;}
+
+  /* ---------- Mascot story ---------- */
+  .mascot{background:var(--blue-50);}
+  .mascot .wrap{display:flex;align-items:center;gap:56px;}
+  .mascot-visual{flex:1;min-width:300px;}
+  .mascot-visual .frame{border-radius:20px;overflow:hidden;border:1px solid var(--line);background:#fff;}
+  .mascot-visual .frame img{width:100%;display:block;}
+  .mascot-text{flex:1;min-width:300px;}
+  .mascot-text .eyebrow{font-size:12px;font-weight:700;color:var(--blue-700);letter-spacing:0.06em;margin-bottom:14px;}
+  .mascot-text h2{font-size:26px;font-weight:800;line-height:1.5;margin-bottom:18px;}
+  .quote{
+    border-left:3px solid var(--blue-700);padding:4px 0 4px 18px;margin-bottom:20px;
+    font-size:16px;font-weight:700;color:var(--blue-900);line-height:1.6;
+  }
+  .mascot-text p{font-size:14px;color:#555;margin-bottom:14px;}
+
+  /* ---------- Values ---------- */
+  .values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .value-card{
+    text-align:center;padding:36px 20px;border-radius:16px;border:1px solid var(--line);
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .value-card:hover{box-shadow:0 14px 28px -14px rgba(43,58,77,0.3);transform:translateY(-4px);}
+  .value-card .icon-circle{
+    width:56px;height:56px;border-radius:50%;background:var(--blue-50);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+    border:1px solid var(--blue-300);
+  }
+  .value-card .icon-circle svg{width:26px;height:26px;stroke:var(--blue-900);}
+  .value-card h3{font-size:15px;font-weight:800;margin-bottom:10px;}
+  .value-card p{font-size:12px;color:#777;line-height:1.6;}
+
+  /* ---------- Craft gallery ---------- */
+  .craft-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .craft-card{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:1/1;background:var(--blue-50);}
+  .craft-card img{width:100%;height:100%;object-fit:cover;}
+  .craft-caption{
+    position:absolute;left:0;right:0;bottom:0;padding:18px 16px;
+    background:linear-gradient(180deg, rgba(28,36,48,0) 0%, rgba(28,36,48,0.72) 100%);
+    color:#fff;font-size:13px;font-weight:700;
+  }
+
+  /* ---------- Numbers strip ---------- */
+  .numbers{background:var(--blue-900);color:#fff;}
+  .numbers .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;}
+  .numbers .num{font-size:34px;font-weight:800;margin-bottom:8px;}
+  .numbers .num span{color:var(--blue-300);font-size:20px;}
+  .numbers .lbl{font-size:12px;color:var(--blue-300);font-weight:600;}
+
+  /* ---------- Timeline ---------- */
+  .timeline{max-width:680px;margin:0 auto;position:relative;}
+  .timeline::before{
+    content:"";position:absolute;left:70px;top:6px;bottom:6px;width:1px;background:var(--line);
+  }
+  .tl-item{display:flex;gap:24px;margin-bottom:36px;position:relative;}
+  .tl-item:last-child{margin-bottom:0;}
+  .tl-year{width:70px;flex-shrink:0;text-align:right;font-size:14px;font-weight:800;color:var(--blue-700);padding-top:2px;}
+  .tl-dot{
+    position:absolute;left:66px;top:5px;width:9px;height:9px;border-radius:50%;
+    background:var(--blue-700);border:2px solid #fff;box-shadow:0 0 0 1px var(--blue-300);
+  }
+  .tl-body{padding-left:24px;}
+  .tl-body h4{font-size:14px;font-weight:800;margin-bottom:4px;}
+  .tl-body p{font-size:12px;color:#777;}
+
+  /* ---------- CTA ---------- */
+  .cta-band{
+    background:var(--blue-50);border-radius:20px;padding:56px 40px;text-align:center;
+  }
+  .cta-band h3{font-size:24px;font-weight:800;margin-bottom:12px;}
+  .cta-band p{font-size:14px;color:#666;margin-bottom:28px;}
+  .cta-btns{display:flex;gap:12px;justify-content:center;}
+
+  /* ---------- Footer (shared) ---------- */
+  footer{background:var(--ink);color:#c9d2de;padding:44px 0 24px;font-size:12px;}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
+  .foot-brand{display:flex;align-items:center;gap:8px;}
+  .foot-brand img{width:30px;height:30px;border-radius:50%;object-fit:cover;}
+  .foot-brand b{color:#fff;font-size:15px;letter-spacing:0.06em;}
+  .foot-links{display:flex;gap:18px;}
+  .foot-social{display:flex;gap:14px;}
+  .foot-social svg{width:18px;height:18px;stroke:#c9d2de;}
+  .foot-info{line-height:1.9;color:#8b95a3;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;}
+
+  @media (max-width:900px){
+    .menu{display:none;}
+    .intro .wrap{flex-direction:column;}
+    .mascot .wrap{flex-direction:column-reverse;}
+    .values-grid{grid-template-columns:repeat(2,1fr);}
+    .craft-grid{grid-template-columns:1fr 1fr;}
+    .numbers .wrap{grid-template-columns:repeat(2,1fr);row-gap:28px;}
+    .tl-item{gap:14px;}
+    .timeline::before{left:54px;}
+    .tl-dot{left:50px;}
+    .tl-year{width:54px;font-size:12px;}
+  }
+  @media (max-width:560px){
+    .craft-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="담음 DAMUM 로고">
+      <div class="brand-text"><b>DAMUM</b><span>custom shop</span></div>
+    </a>
+    <nav class="menu">
+      <a href="index.html#shop">SHOP</a>
+      <a href="index.html#custom">CUSTOM</a>
+      <a href="index.html#best">BEST</a>
+      <a href="review.html">REVIEW</a>
+      <a href="about.html" class="active">ABOUT</a>
+    </nav>
+    <div class="icons">
+      <button aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button aria-label="위시리스트"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+      <button aria-label="장바구니"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+      <button aria-label="마이페이지"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-3.8 5-6 8-6s6.4 2.2 8 6"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- BANNER -->
+  <div class="page-banner">
+    <div class="wrap">
+      <div class="breadcrumb">HOME &rsaquo; ABOUT</div>
+      <h1>브랜드 소개</h1>
+      <p>담음이 만들어가는 이야기를 소개할게요.</p>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <div class="wrap">
+      <div class="intro-text">
+        <div class="eyebrow">ABOUT DAMUM</div>
+        <h2>당신만의 우주를,<br><span>담음</span>에 담다.</h2>
+        <p>담음(DAMUM)은 &lsquo;담다&rsquo;에서 시작된 이름이에요.<br>거창한 순간이 아니어도 괜찮아요. 오늘 스친 생각, 좋아하는 사람, 아끼는 반려동물처럼 사소하지만 나에게는 소중한 것들을 굿즈에 담아드립니다.</p>
+        <p>우주 고리를 두른 작은 검은 고양이는 담음의 얼굴이에요. 누구에게나 자신만의 우주가 있다는 믿음으로, 그 안에 머무는 순간들을 자수와 인쇄로 오래 남을 수 있게 만들고 있어요.</p>
+      </div>
+      <div class="intro-visual">
+        <div class="frame"><img src="images/t1-3.png" alt="담음 커스텀 티셔츠 착용 컷"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MASCOT STORY -->
+  <section class="mascot">
+    <div class="wrap">
+      <div class="mascot-visual">
+        <div class="frame"><img src="images/hat1-3.jpg" alt="담음 마스코트 우주 고양이 디자인 포인트"></div>
+      </div>
+      <div class="mascot-text">
+        <div class="eyebrow">BRAND MASCOT</div>
+        <h2>우주 고리를 두른<br>작은 고양이, 담뭉이</h2>
+        <div class="quote">"내 세상은 내가 정해,<br>여긴 나만의 우주니까."</div>
+        <p>담음의 마스코트 &lsquo;담뭉이&rsquo;는 토성의 고리를 목에 두른 검은 고양이예요. 작고 평범해 보여도 자신만의 궤도를 그리며 사는 존재를 표현했어요.</p>
+        <p>담음의 모든 굿즈에는 이 작은 우주 고양이가 함께해요. 자수 하나, 그림 하나에도 &lsquo;당신다움&rsquo;을 지켜주고 싶은 마음을 담았습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section id="values">
+    <div class="wrap">
+      <h2 class="section-title">담음이 지키는 것들</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 10c0-3 2-5 5-5s5 2 5 5-4 8-5 9c-1-1-5-6-5-9z"/><circle cx="9" cy="9" r="1"/></svg></div>
+          <h3>단 하나의 이야기</h3>
+          <p>같은 디자인이라도 당신의 사진과 사연이 더해지면<br>세상에 하나뿐인 굿즈가 됩니다.</p>
+        </div>
+        <div class="value-card">
+          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h3>꼼꼼한 마감</h3>
+          <p>자수 한 땀, 인쇄 한 겹까지 직접 확인한 뒤<br>발송하는 것을 원칙으로 해요.</p>
+        </div>
+        <div class="value-card">
+          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div>
+          <h3>솔직한 소통</h3>
+          <p>제작 전 디자인을 미리 확인시켜드리고,<br>궁금한 점은 언제든 편하게 물어보세요.</p>
+        </div>
+        <div class="value-card">
+          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+          <h3>오래 곁에 두는 물건</h3>
+          <p>유행보다 오래 간직하고 싶은 디자인과<br>튼튼한 소재를 먼저 고민해요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRAFT GALLERY -->
+  <section style="background:var(--blue-50);">
+    <div class="wrap">
+      <h2 class="section-title">담음이 만드는 방식</h2>
+      <div class="craft-grid">
+        <div class="craft-card">
+          <img src="images/t1-2.png" alt="티셔츠 자수 디테일">
+          <div class="craft-caption">한 땀 한 땀, 자수 디테일</div>
+        </div>
+        <div class="craft-card">
+          <img src="images/case1-2.png" alt="폰케이스 인쇄 디테일">
+          <div class="craft-caption">선명하게, 인쇄 디테일</div>
+        </div>
+        <div class="craft-card">
+          <img src="images/kiring1-2.jpg" alt="키링 제작 디테일">
+          <div class="craft-caption">튼튼하게, 마감 디테일</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUMBERS -->
+  <section class="numbers">
+    <div class="wrap">
+      <div>
+        <div class="num">12,400<span>+</span></div>
+        <div class="lbl">누적 제작 굿즈</div>
+      </div>
+      <div>
+        <div class="num">4.9<span>/5</span></div>
+        <div class="lbl">평균 만족도</div>
+      </div>
+      <div>
+        <div class="num">63<span>%</span></div>
+        <div class="lbl">재구매율</div>
+      </div>
+      <div>
+        <div class="num">2.8<span>일</span></div>
+        <div class="lbl">평균 제작 기간</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section>
+    <div class="wrap">
+      <h2 class="section-title">담음의 걸음</h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-year">2023</div>
+          <div class="tl-dot"></div>
+          <div class="tl-body">
+            <h4>담음 시작</h4>
+            <p>고양이 마스코트 &lsquo;담뭉이&rsquo;와 함께 소규모 커스텀 자수 티셔츠 제작을 시작했어요.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2024</div>
+          <div class="tl-dot"></div>
+          <div class="tl-body">
+            <h4>상품 라인 확장</h4>
+            <p>모자, 키링, 폰케이스 등으로 제작 가능한 굿즈 종류를 늘렸어요.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2025</div>
+          <div class="tl-dot"></div>
+          <div class="tl-body">
+            <h4>누적 주문 1만 건 돌파</h4>
+            <p>많은 분들의 소중한 순간을 함께 담으며 누적 제작 1만 건을 넘겼어요.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2026</div>
+          <div class="tl-dot"></div>
+          <div class="tl-body">
+            <h4>지금의 담음</h4>
+            <p>더 많은 카테고리와 더 편한 주문 시스템을 준비하고 있어요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section>
+    <div class="wrap">
+      <div class="cta-band">
+        <h3>이제, 당신의 우주를 담아볼까요?</h3>
+        <p>사진 한 장, 이야기 한 줄이면 충분해요.</p>
+        <div class="cta-btns">
+          <a class="btn btn-dark" href="index.html#custom">나만의 굿즈 만들기</a>
+          <a class="btn btn-light" href="index.html#best">상품 둘러보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <img src="logo.png" alt="담음 로고">
+        <b>DAMUM custom shop</b>
+      </div>
+      <div class="foot-links">
+        <a href="#">이용약관</a>
+        <a href="#">개인정보처리방침</a>
+        <a href="#">배송/교환/환불</a>
+        <a href="#">사업자정보확인</a>
+      </div>
+      <div class="foot-social">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </div>
+    </div>
+    <div class="foot-info">
+      (주)담음 &nbsp;|&nbsp; 대표: 홍길동 &nbsp;|&nbsp; 사업자등록번호: 123-45-67890<br>
+      통신판매업신고번호: 2026-서울강남-01234 &nbsp;|&nbsp; 사업장 주소: 서울시 강남구 테헤란로 123, 4층<br>
+      이메일: hello@damum.shop<br>
+      © 2026 DAMUM custom shop. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
