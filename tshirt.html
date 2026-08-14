@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>담음 커스텀 티셔츠 | 담음 DAMUM</title>
+<link rel="icon" href="logo.png">
+<style>
+  :root{
+    --blue-900:#2b3a4d;
+    --blue-700:#5b7597;
+    --blue-500:#8fa6c2;
+    --blue-300:#b9c9dd;
+    --blue-100:#dde6f0;
+    --blue-50:#f3f6fa;
+    --ink:#1c2430;
+    --paper:#ffffff;
+    --line:#e7ecf3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.5;
+  }
+  img{max-width:100%;display:block;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+  section{padding:0;}
+  h2.section-title{
+    text-align:center;font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;
+  }
+  .section-sub{text-align:center;font-size:13px;color:#888;margin-bottom:40px;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(6px);border-bottom:1px solid var(--line);
+  }
+  .nav{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:8px;}
+  .brand img{width:38px;height:38px;object-fit:cover;border-radius:50%;}
+  .brand .brand-text{display:flex;flex-direction:column;line-height:1.1;}
+  .brand .brand-text b{font-size:18px;letter-spacing:0.06em;}
+  .brand .brand-text span{font-size:10px;color:var(--blue-700);letter-spacing:0.08em;}
+  .menu{display:flex;gap:20px;font-size:14px;font-weight:600;color:var(--blue-900);}
+  .menu a:hover{color:var(--blue-700);}
+  .menu a.active{color:var(--blue-700);}
+  .icons{display:flex;gap:20px;align-items:center;}
+  .icons button{background:none;border:none;cursor:pointer;color:var(--ink);}
+
+  .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:30px;height:30px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;}
+  .hamburger span{display:block;width:100%;height:2px;background:var(--ink);border-radius:2px;transition:transform .25s ease, opacity .25s ease;}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  .mobile-overlay{position:fixed;inset:0;background:rgba(20,28,40,0.45);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:200;}
+  .mobile-overlay.show{opacity:1;pointer-events:auto;}
+
+  .mobile-drawer{position:fixed;top:0;left:0;bottom:0;width:min(78vw,320px);background:#fff;transform:translateX(-100%);transition:transform .32s cubic-bezier(.22,.61,.36,1);z-index:201;display:flex;flex-direction:column;box-shadow:16px 0 36px -16px rgba(20,28,40,0.35);}
+  .mobile-drawer.open{transform:translateX(0);}
+  .mobile-drawer .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line);}
+  .mobile-drawer .drawer-close{background:none;border:none;cursor:pointer;color:var(--ink);padding:4px;}
+  .mobile-drawer nav{display:flex;flex-direction:column;padding:8px 0;overflow-y:auto;}
+  .mobile-drawer nav a{padding:16px 22px;font-size:15px;font-weight:700;color:var(--blue-900);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+  .mobile-drawer nav a.active{color:var(--blue-700);background:var(--blue-50);}
+  .mobile-drawer nav a svg{width:14px;height:14px;stroke:var(--blue-500);}
+  .btn{padding:14px 26px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid var(--ink);transition:all .15s ease;display:inline-block;}
+  .btn-dark{background:var(--ink);color:#fff;}
+  .btn-dark:hover{background:var(--blue-900);}
+  .btn-light{background:#fff;color:var(--ink);}
+  .btn-light:hover{background:var(--blue-50);}
+
+  .breadcrumb{font-size:12px;color:#888;font-weight:600;padding:18px 0;}
+  .breadcrumb a:hover{color:var(--blue-700);}
+  .breadcrumb .cur{color:var(--blue-900);font-weight:700;}
+
+  /* ---------- HERO ---------- */
+  .pd-hero{background:var(--blue-100);padding:64px 0 56px;text-align:center;}
+  .pd-hero .frame{
+    max-width:460px;margin:0 auto;border-radius:26px;overflow:hidden;
+    box-shadow:0 20px 40px -18px rgba(43,58,77,0.4);aspect-ratio:4/5;
+  }
+  .pd-hero .frame img{width:100%;height:100%;object-fit:cover;}
+  .pd-hero .serif{
+    font-family:Georgia,"Noto Serif KR",serif;font-size:34px;font-style:italic;
+    margin-top:30px;letter-spacing:0.01em;
+  }
+  .pd-hero .kr-sub{font-size:14px;color:var(--blue-700);font-weight:700;margin-top:8px;}
+
+  /* ---------- Quote band ---------- */
+  .pd-quote-band{
+    position:relative;min-height:380px;background-size:cover;background-position:center;
+    display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;
+  }
+  .pd-quote-band::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(20,28,40,0.32), rgba(20,28,40,0.62));
+  }
+  .pd-quote-band .inner{position:relative;z-index:1;padding:0 24px;max-width:520px;}
+  .pd-quote-band .inner p{font-size:18px;font-weight:700;line-height:1.8;margin-bottom:20px;}
+  .pd-quote-band .inner .eng{font-size:11px;letter-spacing:0.18em;color:var(--blue-100);font-weight:700;}
+
+  /* ---------- Polaroid duo ---------- */
+  .polaroid-wrap{padding:70px 24px;background:var(--blue-50);display:flex;justify-content:center;gap:26px;flex-wrap:wrap;}
+  .polaroid{background:#fff;padding:10px 10px 24px;border-radius:6px;box-shadow:0 16px 32px -16px rgba(43,58,77,0.4);width:270px;}
+  .polaroid img{border-radius:2px;width:100%;aspect-ratio:1/1;object-fit:cover;}
+  .polaroid .cap{text-align:center;font-size:11px;color:#888;font-weight:700;margin-top:10px;}
+  .polaroid.a{transform:rotate(-4deg);}
+  .polaroid.b{transform:rotate(4deg);margin-top:26px;}
+
+  /* ---------- Lifestyle + bubbles ---------- */
+  .pd-lifestyle{padding:80px 0;background:#fff;text-align:center;}
+  .pd-lifestyle .frame{
+    max-width:680px;margin:0 auto;border-radius:24px;overflow:hidden;position:relative;
+    aspect-ratio:4/5;
+  }
+  .pd-lifestyle .frame img{width:100%;height:100%;object-fit:cover;}
+  .bubble{
+    position:absolute;background:#fff;color:var(--ink);font-size:12px;font-weight:700;
+    padding:9px 16px;border-radius:20px;box-shadow:0 8px 18px -8px rgba(0,0,0,0.3);white-space:nowrap;
+  }
+  .b1{top:14%;left:6%;}
+  .b2{top:38%;right:5%;}
+  .b3{bottom:12%;left:10%;}
+  .ls-summary{max-width:480px;margin:30px auto 0;font-size:14px;color:#555;line-height:1.8;}
+  .best-tag{
+    display:inline-block;margin-top:18px;padding:11px 26px;border:1.5px solid var(--ink);
+    border-radius:30px;font-weight:800;font-size:14px;
+  }
+
+  /* ---------- Style grid ---------- */
+  .style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .style-card{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:1/1;background:var(--blue-50);}
+  .style-card img{width:100%;height:100%;object-fit:cover;}
+  .style-caption{
+    position:absolute;left:0;right:0;bottom:0;padding:16px 14px;
+    background:linear-gradient(180deg, rgba(28,36,48,0) 0%, rgba(28,36,48,0.72) 100%);
+    color:#fff;font-size:12px;font-weight:700;
+  }
+
+  /* ---------- Detail cards ---------- */
+  .detail-card{border-radius:24px;overflow:hidden;position:relative;margin-bottom:22px;background:var(--blue-50);}
+  .detail-card img{width:100%;display:block;}
+  .detail-caption{
+    position:absolute;left:0;right:0;bottom:0;padding:26px 28px;
+    background:linear-gradient(180deg, rgba(28,36,48,0) 0%, rgba(28,36,48,0.82) 100%);
+    color:#fff;
+  }
+  .detail-caption .num{font-size:12px;font-weight:800;letter-spacing:0.1em;color:var(--blue-300);margin-bottom:6px;}
+  .detail-caption h4{font-size:17px;font-weight:800;margin-bottom:6px;}
+  .detail-caption p{font-size:12.5px;color:#e6ebf2;line-height:1.6;max-width:420px;}
+
+  /* ---------- Buy box ---------- */
+  .buy-box{
+    display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;
+    border:1px solid var(--line);border-radius:20px;padding:36px;
+  }
+  .buy-box .thumb{width:220px;border-radius:14px;overflow:hidden;flex-shrink:0;aspect-ratio:1/1;}
+  .buy-box .thumb img{width:100%;height:100%;object-fit:cover;}
+  .buy-box .info{flex:1;min-width:260px;}
+  .buy-box .cat{font-size:12px;color:var(--blue-700);font-weight:700;margin-bottom:8px;}
+  .buy-box h3{font-size:22px;font-weight:800;margin-bottom:10px;}
+  .buy-box .price{font-size:24px;font-weight:800;margin-bottom:20px;}
+  .buy-box .price .orig{font-size:14px;color:#aaa;text-decoration:line-through;font-weight:600;margin-right:8px;}
+  .opt-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;font-size:13px;}
+  .opt-row .lbl{width:64px;color:#777;font-weight:700;}
+  .opt-select{
+    border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;
+    color:var(--ink);flex:1;max-width:260px;background:#fff;
+  }
+  .qty-stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden;width:fit-content;}
+  .qty-stepper button{width:32px;height:32px;border:none;background:var(--blue-50);cursor:pointer;font-size:15px;font-weight:700;color:var(--blue-900);}
+  .qty-stepper span{width:40px;text-align:center;font-size:13px;font-weight:700;}
+  .buy-btns{display:flex;gap:10px;margin-top:24px;}
+  .buy-btns .btn{flex:1;text-align:center;}
+  .upload-note{
+    display:flex;gap:10px;align-items:flex-start;margin-top:20px;padding:14px 16px;
+    background:var(--blue-50);border-radius:12px;font-size:12px;color:var(--blue-900);
+  }
+  .upload-note svg{width:16px;height:16px;stroke:var(--blue-700);flex-shrink:0;margin-top:1px;}
+
+  /* ---------- Info table ---------- */
+  .info-table{border-top:1px solid var(--line);}
+  .info-row{display:flex;padding:16px 4px;border-bottom:1px solid var(--line);font-size:13px;}
+  .info-row .k{width:120px;flex-shrink:0;color:#888;font-weight:700;}
+  .info-row .v{color:var(--ink);font-weight:600;}
+  .badge-row{display:flex;gap:28px;justify-content:center;padding:28px 0 4px;flex-wrap:wrap;}
+  .badge-row div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;font-weight:700;color:#777;}
+  .badge-row .icon-circle{
+    width:44px;height:44px;border-radius:50%;background:var(--blue-50);display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--blue-300);
+  }
+  .badge-row svg{width:20px;height:20px;stroke:var(--blue-900);}
+
+  /* ---------- Accordion ---------- */
+  .acc-item{border-bottom:1px solid var(--line);}
+  .acc-item summary{
+    list-style:none;cursor:pointer;padding:18px 4px;display:flex;justify-content:space-between;
+    align-items:center;font-size:14px;font-weight:700;
+  }
+  .acc-item summary::-webkit-details-marker{display:none;}
+  .acc-item summary .plus{color:var(--blue-500);font-weight:800;}
+  .acc-item p{padding:0 4px 18px;font-size:13px;color:#666;line-height:1.7;}
+
+  /* ---------- Related ---------- */
+  .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .rel-card{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;transition:transform .15s ease, box-shadow .15s ease;}
+  .rel-card:hover{transform:translateY(-4px);box-shadow:0 14px 28px -14px rgba(43,58,77,0.35);}
+  .rel-thumb{aspect-ratio:1/1;background:var(--blue-50);overflow:hidden;}
+  .rel-thumb img{width:100%;height:100%;object-fit:cover;}
+  .rel-info{padding:14px 16px 18px;}
+  .rel-info .name{font-size:13px;font-weight:700;margin-bottom:6px;}
+  .rel-info .price{font-size:14px;font-weight:800;}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--ink);color:#c9d2de;padding:44px 0 24px;font-size:12px;}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:16px;max-width:1200px;margin-left:auto;margin-right:auto;padding:0 24px;}
+  .foot-brand{display:flex;align-items:center;gap:8px;}
+  .foot-brand img{width:30px;height:30px;border-radius:50%;object-fit:cover;}
+  .foot-brand b{color:#fff;font-size:15px;letter-spacing:0.06em;}
+  .foot-links{display:flex;gap:18px;}
+  .foot-social{display:flex;gap:14px;}
+  .foot-social svg{width:18px;height:18px;stroke:#c9d2de;}
+  .foot-info{line-height:1.9;color:#8b95a3;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;max-width:1200px;margin:0 auto;padding-left:24px;padding-right:24px;}
+
+  .block{padding:70px 0;}
+
+  @media (max-width:900px){
+    .menu{display:none;}
+    .hamburger{display:flex;}
+    .bubble{display:none;}
+    .style-grid{grid-template-columns:repeat(2,1fr);}
+    .related-grid{grid-template-columns:repeat(2,1fr);}
+    .buy-box{flex-direction:column;}
+    .buy-box .thumb{width:100%;}
+  }
+  @media (max-width:560px){
+    .style-grid{grid-template-columns:1fr;}
+    .related-grid{grid-template-columns:1fr;}
+    .polaroid{width:80%;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="담음 DAMUM 로고">
+      <div class="brand-text"><b>DAMUM</b><span>custom shop</span></div>
+    </a>
+    <nav class="menu">
+      <a href="index.html">홈</a>
+      <a href="tshirt.html" class="active">티셔츠</a>
+      <a href="hat.html">모자</a>
+      <a href="keyring.html">키링</a>
+      <a href="case.html">케이스</a>
+      <a href="index.html#best">베스트</a>
+      <a href="review.html">리뷰</a>
+      <a href="about.html">소개</a>
+    </nav>
+    <div class="icons">
+      <button aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button aria-label="위시리스트"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+      <button aria-label="장바구니"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+      <button aria-label="마이페이지"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-3.8 5-6 8-6s6.4 2.2 8 6"/></svg></button>
+      <button class="hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileDrawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<aside class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-head">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="담음 DAMUM 로고">
+      <div class="brand-text"><b>DAMUM</b><span>custom shop</span></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="메뉴 닫기">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav>
+    <a href="index.html">홈<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="tshirt.html" class="active">티셔츠<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="hat.html">모자<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="keyring.html">키링<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="case.html">케이스<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="index.html#best">베스트<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="review.html">리뷰<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="about.html">소개<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+  </nav>
+</aside>
+
+<main>
+
+  <div class="wrap breadcrumb">
+    <a href="index.html">HOME</a> &rsaquo; <a href="index.html#shop">SHOP</a> &rsaquo; <span class="cur">커스텀 티셔츠</span>
+  </div>
+
+  <!-- HERO -->
+  <section class="pd-hero">
+    <div class="frame"><img src="images/t1-1.jpg" alt="담음 커스텀 티셔츠"></div>
+    <h1 class="serif">Saturn Cat Tee</h1>
+    <div class="kr-sub">담음 커스텀 티셔츠 · 우주 고양이 자수</div>
+  </section>
+
+  <!-- QUOTE BAND -->
+  <div class="pd-quote-band" style="background-image:url('images/t1-3.png');">
+    <div class="inner">
+      <p>왼쪽 가슴에 살짝 자리한<br>작은 우주 고양이 자수 하나로<br>평범한 화이트 티셔츠가 특별해집니다.</p>
+      <div class="eng">DAMUM MASCOT SERIES — SATURN CAT</div>
+    </div>
+  </div>
+
+  <!-- POLAROID DUO -->
+  <div class="polaroid-wrap">
+    <div class="polaroid a"><img src="images/t1-2.png" alt="담음 티셔츠 자수 디테일 모음"><div class="cap">자수 디테일 모음</div></div>
+    <div class="polaroid b"><img src="images/t1-1.jpg" alt="담음 티셔츠 플랫레이"><div class="cap">플랫레이 컷</div></div>
+  </div>
+
+  <!-- LIFESTYLE + BUBBLES -->
+  <div class="pd-lifestyle wrap">
+    <div class="frame">
+      <img src="images/t1-3.png" alt="담음 티셔츠 착용 컷">
+      <div class="bubble b1">데일리로 편한 핏</div>
+      <div class="bubble b2">두께감 있는 순면 원단</div>
+      <div class="bubble b3">세탁해도 자수 그대로</div>
+    </div>
+    <p class="ls-summary">
+      가볍지 않은 두께의 순면 원단에 담뭉이 자수를 놓은 담음의 시그니처 티셔츠예요.
+      과하지 않은 사이즈감으로 남녀 모두 편하게 입을 수 있어요.
+    </p>
+    <div class="best-tag">Best. 담음 커스텀 티셔츠</div>
+  </div>
+
+  <!-- STYLE GRID -->
+  <section class="block" style="background:var(--blue-50);">
+    <div class="wrap">
+      <h2 class="section-title">이렇게 담아보세요</h2>
+      <div class="section-sub">이름이나 짧은 문구를 함께 새기면 나만의 티셔츠가 완성돼요.</div>
+      <div class="style-grid">
+        <div class="style-card"><img src="images/t1-1.jpg" alt="플랫레이"><div class="style-caption">기본 · 화이트</div></div>
+        <div class="style-card"><img src="images/t1-3.png" alt="착용컷"><div class="style-caption">데일리 착용컷</div></div>
+        <div class="style-card"><img src="images/t1-2.png" alt="자수 클로즈업"><div class="style-caption">자수 클로즈업</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAIL VIEW -->
+  <section class="block">
+    <div class="wrap">
+      <h2 class="section-title">Detail View</h2>
+      <div class="section-sub">디테일한 자수와 원단을 확인하세요.</div>
+      <div class="detail-card">
+        <img src="images/t1-2.png" alt="담음 티셔츠 자수 및 마감 디테일">
+        <div class="detail-caption">
+          <div class="num">DETAIL 01</div>
+          <h4>촘촘한 자수, 튼튼한 마감</h4>
+          <p>한 땀 한 땀 촘촘하게 놓은 자수로 세탁 후에도 풀림 없이 오래갑니다. 목단과 밑단 박음질까지 꼼꼼히 확인해요.</p>
+        </div>
+      </div>
+      <div class="detail-card">
+        <img src="images/t1-3.png" alt="담음 티셔츠 착용 실루엣">
+        <div class="detail-caption">
+          <div class="num">DETAIL 02</div>
+          <h4>과하지 않은 데일리 핏</h4>
+          <p>박시하지도 타이트하지도 않은 적당한 실루엣으로 매일 편하게 꺼내 입을 수 있어요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUY BOX -->
+  <section class="block" style="padding-top:0;">
+    <div class="wrap">
+      <div class="buy-box">
+        <div class="thumb"><img src="images/t1-1.jpg" alt="담음 커스텀 티셔츠"></div>
+        <div class="info">
+          <div class="cat">TSHIRTS</div>
+          <h3>담음 커스텀 티셔츠</h3>
+          <div class="price">29,900원</div>
+          <div class="opt-row"><span class="lbl">사이즈</span>
+            <select class="opt-select"><option>S (95)</option><option>M (100)</option><option>L (105)</option><option>XL (110)</option></select>
+          </div>
+          <div class="opt-row"><span class="lbl">자수 문구</span>
+            <select class="opt-select"><option>기본 (담뭉이만)</option><option>이니셜 추가</option><option>짧은 문구 추가</option></select>
+          </div>
+          <div class="opt-row"><span class="lbl">수량</span>
+            <div class="qty-stepper"><button>-</button><span>1</span><button>+</button></div>
+          </div>
+          <div class="upload-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-4 4-3-3-6 6"/></svg>
+            <span>주문 시 원하는 사진이나 문구를 업로드하면 담당 디자이너가 시안을 먼저 보여드려요.</span>
+          </div>
+          <div class="buy-btns">
+            <a class="btn btn-light" href="#">장바구니 담기</a>
+            <a class="btn btn-dark" href="index.html#custom">나만의 굿즈로 만들기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-table">
+        <div class="info-row"><div class="k">컬러</div><div class="v">화이트</div></div>
+        <div class="info-row"><div class="k">소재</div><div class="v">면 100%</div></div>
+        <div class="info-row"><div class="k">사이즈</div><div class="v">S / M / L / XL (실측 사이즈는 상세 참고)</div></div>
+        <div class="info-row"><div class="k">제조국</div><div class="v">MADE IN KOREA</div></div>
+        <div class="info-row"><div class="k">세탁방법</div><div class="v">찬물 손세탁 또는 울코스 세탁 권장, 자수 부분 다림질 주의</div></div>
+      </div>
+      <div class="badge-row">
+        <div><div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 10c0-3 2-5 5-5s5 2 5 5-4 8-5 9c-1-1-5-6-5-9z"/><circle cx="9" cy="9" r="1"/></svg></div>COTTON 100%</div>
+        <div><div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M15 15c3 0 5 2 5 6"/></svg></div>UNISEX</div>
+        <div><div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg></div>DAILY ITEM</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCORDION -->
+  <section class="block" style="background:var(--blue-50);">
+    <div class="wrap" style="max-width:760px;">
+      <h2 class="section-title">알아두면 좋아요</h2>
+      <div class="section-sub">주문 전 참고해 주세요.</div>
+      <details class="acc-item" open>
+        <summary>제작 기간이 얼마나 걸리나요?<span class="plus">+</span></summary>
+        <p>디자인 확정 후 평균 2~5일 내 제작되며, 자수 상품은 물량에 따라 다소 지연될 수 있어요.</p>
+      </details>
+      <details class="acc-item">
+        <summary>세탁 시 자수가 상하지 않나요?<span class="plus">+</span></summary>
+        <p>찬물 손세탁을 권장드리며, 자수 부위는 다림질을 피해주세요. 일반 세탁기 사용 시 세탁망을 이용해주세요.</p>
+      </details>
+      <details class="acc-item">
+        <summary>주문 제작 상품도 교환/환불이 되나요?<span class="plus">+</span></summary>
+        <p>고객 요청으로 제작된 커스텀 상품은 단순 변심에 의한 교환/환불이 제한돼요. 오배송·불량은 100% 책임지고 교환해드려요.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- RELATED -->
+  <section class="block">
+    <div class="wrap">
+      <h2 class="section-title">함께 담아보세요</h2>
+      <div class="section-sub">담뭉이와 어울리는 다른 굿즈도 만나보세요.</div>
+      <div class="related-grid">
+        <a class="rel-card" href="hat.html">
+          <div class="rel-thumb"><img src="images/hat1-1.jpg" alt="담음 커스텀 모자"></div>
+          <div class="rel-info"><div class="name">담음 커스텀 모자</div><div class="price">25,900원</div></div>
+        </a>
+        <a class="rel-card" href="keyring.html">
+          <div class="rel-thumb"><img src="images/kiring1-1.jpg" alt="담음 커스텀 키링"></div>
+          <div class="rel-info"><div class="name">담음 커스텀 키링</div><div class="price">9,900원</div></div>
+        </a>
+        <a class="rel-card" href="case.html">
+          <div class="rel-thumb"><img src="images/case1-1.png" alt="담음 커스텀 폰케이스"></div>
+          <div class="rel-info"><div class="name">담음 커스텀 폰케이스</div><div class="price">19,900원</div></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-top">
+    <div class="foot-brand">
+      <img src="logo.png" alt="담음 로고">
+      <b>DAMUM custom shop</b>
+    </div>
+    <div class="foot-links">
+      <a href="#">이용약관</a>
+      <a href="#">개인정보처리방침</a>
+      <a href="#">배송/교환/환불</a>
+      <a href="#">사업자정보확인</a>
+    </div>
+    <div class="foot-social">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+    </div>
+  </div>
+  <div class="foot-info">
+    (주)담음 &nbsp;|&nbsp; 대표: 홍길동 &nbsp;|&nbsp; 사업자등록번호: 123-45-67890<br>
+    통신판매업신고번호: 2026-서울강남-01234 &nbsp;|&nbsp; 사업장 주소: 서울시 강남구 테헤란로 123, 4층<br>
+    이메일: hello@damum.shop<br>
+    © 2026 DAMUM custom shop. All rights reserved.
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.qty-stepper').forEach(function(stepper){
+    var span = stepper.querySelector('span');
+    var btns = stepper.querySelectorAll('button');
+    var qty = 1;
+    btns[0].addEventListener('click', function(){ if(qty>1){ qty--; span.textContent = qty; } });
+    btns[1].addEventListener('click', function(){ qty++; span.textContent = qty; });
+  });
+</script>
+<script>
+(function(){
+  var btn = document.getElementById('hamburgerBtn');
+  var overlay = document.getElementById('mobileOverlay');
+  var drawer = document.getElementById('mobileDrawer');
+  var closeBtn = document.getElementById('drawerClose');
+  function openDrawer(){
+    drawer.classList.add('open');
+    overlay.classList.add('show');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+    document.body.style.overflow='hidden';
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    overlay.classList.remove('show');
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+    document.body.style.overflow='';
+  }
+  btn.addEventListener('click', function(){
+    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+  overlay.addEventListener('click', closeDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeDrawer(); });
+})();
+</script>
+
+</body>
+</html>

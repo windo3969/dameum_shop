@@ -50,7 +50,7 @@
   .brand .brand-text{display:flex;flex-direction:column;line-height:1.1;}
   .brand .brand-text b{font-size:18px;letter-spacing:0.06em;}
   .brand .brand-text span{font-size:10px;color:var(--blue-700);letter-spacing:0.08em;}
-  .menu{display:flex;gap:36px;font-size:14px;font-weight:600;color:var(--blue-900);}
+  .menu{display:flex;gap:20px;font-size:14px;font-weight:600;color:var(--blue-900);}
   .menu a{position:relative;padding:4px 0;}
   .menu a:hover{color:var(--blue-700);}
   .menu a.active{color:var(--blue-700);}
@@ -59,6 +59,24 @@
   }
   .icons{display:flex;gap:20px;align-items:center;}
   .icons button{background:none;border:none;cursor:pointer;color:var(--ink);}
+
+  .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:30px;height:30px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;}
+  .hamburger span{display:block;width:100%;height:2px;background:var(--ink);border-radius:2px;transition:transform .25s ease, opacity .25s ease;}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  .mobile-overlay{position:fixed;inset:0;background:rgba(20,28,40,0.45);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:200;}
+  .mobile-overlay.show{opacity:1;pointer-events:auto;}
+
+  .mobile-drawer{position:fixed;top:0;left:0;bottom:0;width:min(78vw,320px);background:#fff;transform:translateX(-100%);transition:transform .32s cubic-bezier(.22,.61,.36,1);z-index:201;display:flex;flex-direction:column;box-shadow:16px 0 36px -16px rgba(20,28,40,0.35);}
+  .mobile-drawer.open{transform:translateX(0);}
+  .mobile-drawer .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line);}
+  .mobile-drawer .drawer-close{background:none;border:none;cursor:pointer;color:var(--ink);padding:4px;}
+  .mobile-drawer nav{display:flex;flex-direction:column;padding:8px 0;overflow-y:auto;}
+  .mobile-drawer nav a{padding:16px 22px;font-size:15px;font-weight:700;color:var(--blue-900);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+  .mobile-drawer nav a.active{color:var(--blue-700);background:var(--blue-50);}
+  .mobile-drawer nav a svg{width:14px;height:14px;stroke:var(--blue-500);}
   .btn{
     padding:14px 26px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;
     border:1px solid var(--ink);transition:all .15s ease;display:inline-block;
@@ -177,6 +195,7 @@
 
   @media (max-width:900px){
     .menu{display:none;}
+    .hamburger{display:flex;}
     .intro .wrap{flex-direction:column;}
     .mascot .wrap{flex-direction:column-reverse;}
     .values-grid{grid-template-columns:repeat(2,1fr);}
@@ -201,20 +220,49 @@
       <div class="brand-text"><b>DAMUM</b><span>custom shop</span></div>
     </a>
     <nav class="menu">
-      <a href="index.html#shop">SHOP</a>
-      <a href="index.html#custom">CUSTOM</a>
-      <a href="index.html#best">BEST</a>
-      <a href="review.html">REVIEW</a>
-      <a href="about.html" class="active">ABOUT</a>
+      <a href="index.html">홈</a>
+      <a href="tshirt.html">티셔츠</a>
+      <a href="hat.html">모자</a>
+      <a href="keyring.html">키링</a>
+      <a href="case.html">케이스</a>
+      <a href="index.html#best">베스트</a>
+      <a href="review.html">리뷰</a>
+      <a href="about.html" class="active">소개</a>
     </nav>
     <div class="icons">
       <button aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
       <button aria-label="위시리스트"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
       <button aria-label="장바구니"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
       <button aria-label="마이페이지"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-3.8 5-6 8-6s6.4 2.2 8 6"/></svg></button>
+      <button class="hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileDrawer">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </header>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<aside class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-head">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="담음 DAMUM 로고">
+      <div class="brand-text"><b>DAMUM</b><span>custom shop</span></div>
+    </a>
+    <button class="drawer-close" id="drawerClose" aria-label="메뉴 닫기">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav>
+    <a href="index.html">홈<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="tshirt.html">티셔츠<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="hat.html">모자<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="keyring.html">키링<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="case.html">케이스<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="index.html#best">베스트<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="review.html">리뷰<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="about.html" class="active">소개<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+  </nav>
+</aside>
 
 <main>
 
@@ -414,6 +462,35 @@
     </div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var btn = document.getElementById('hamburgerBtn');
+  var overlay = document.getElementById('mobileOverlay');
+  var drawer = document.getElementById('mobileDrawer');
+  var closeBtn = document.getElementById('drawerClose');
+  function openDrawer(){
+    drawer.classList.add('open');
+    overlay.classList.add('show');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+    document.body.style.overflow='hidden';
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    overlay.classList.remove('show');
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+    document.body.style.overflow='';
+  }
+  btn.addEventListener('click', function(){
+    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+  overlay.addEventListener('click', closeDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeDrawer(); });
+})();
+</script>
 
 </body>
 </html>
