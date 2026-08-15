@@ -57,6 +57,8 @@
   .menu a.active::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:2px;background:var(--blue-700);}
   .icons{display:flex;gap:20px;align-items:center;}
   .icons button{background:none;border:none;cursor:pointer;color:var(--ink);}
+  .icons a{color:var(--ink);display:inline-flex;}
+  .icons a:hover{color:var(--blue-700);}
 
   .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:30px;height:30px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;}
   .hamburger span{display:block;width:100%;height:2px;background:var(--ink);border-radius:2px;transition:transform .25s ease, opacity .25s ease;}
@@ -75,6 +77,54 @@
   .mobile-drawer nav a{padding:16px 22px;font-size:15px;font-weight:700;color:var(--blue-900);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
   .mobile-drawer nav a.active{color:var(--blue-700);background:var(--blue-50);}
   .mobile-drawer nav a svg{width:14px;height:14px;stroke:var(--blue-500);}
+
+  /* ---------- Event popup ---------- */
+  .event-overlay{
+    position:fixed;inset:0;background:rgba(20,28,40,0.55);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    z-index:300;opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .event-overlay.show{opacity:1;pointer-events:auto;}
+  .event-modal{
+    width:100%;max-width:380px;background:#fff;border-radius:22px;overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(20,28,40,0.5);
+    transform:translateY(14px) scale(.97);opacity:0;transition:transform .3s cubic-bezier(.22,.61,.36,1), opacity .3s ease;
+  }
+  .event-overlay.show .event-modal{transform:translateY(0) scale(1);opacity:1;}
+  .event-modal .ev-photo{
+    position:relative;aspect-ratio:1/1;background:linear-gradient(160deg,var(--blue-300),var(--blue-700));
+    overflow:hidden;
+  }
+  .event-modal .ev-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .event-modal .ev-photo .ev-fallback{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:64px;
+  }
+  .event-modal .ev-badge{
+    position:absolute;top:14px;left:14px;background:#fff;color:var(--blue-900);
+    font-size:11px;font-weight:800;padding:6px 14px;border-radius:20px;letter-spacing:0.04em;
+    box-shadow:0 6px 14px -6px rgba(0,0,0,0.3);
+  }
+  .event-modal .ev-close{
+    position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;
+    background:rgba(20,28,40,0.5);border:none;cursor:pointer;color:#fff;
+    display:flex;align-items:center;justify-content:center;z-index:2;
+  }
+  .event-modal .ev-body{padding:24px 24px 20px;text-align:center;}
+  .event-modal .ev-eyebrow{font-size:12px;font-weight:800;color:var(--blue-700);letter-spacing:0.05em;margin-bottom:10px;}
+  .event-modal .ev-title{font-size:20px;font-weight:800;line-height:1.5;margin-bottom:14px;letter-spacing:-0.01em;}
+  .event-modal .ev-title span{color:var(--blue-700);}
+  .event-modal .ev-desc{font-size:13px;color:#666;line-height:1.7;margin-bottom:20px;}
+  .event-modal .ev-desc b{color:var(--ink);}
+  .event-modal .ev-btns{display:flex;gap:8px;margin-bottom:14px;}
+  .event-modal .ev-btns .btn{flex:1;text-align:center;padding:13px 10px;font-size:13px;}
+  .event-modal .ev-hide{
+    font-size:12px;color:#999;font-weight:600;background:none;border:none;cursor:pointer;
+    text-decoration:underline;text-underline-offset:3px;
+  }
+  @media (max-width:420px){
+    .event-modal{max-width:100%;}
+  }
 
   /* ---------- Hero ---------- */
   .hero{
@@ -175,6 +225,35 @@
   .prod-info .name{font-size:14px;font-weight:700;margin-bottom:6px;}
   .prod-info .price{font-size:15px;font-weight:800;}
 
+  /* ---------- Best concept ---------- */
+  .concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .concept-card{
+    border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#fff;
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .concept-card:hover{box-shadow:0 18px 34px -16px rgba(43,58,77,0.35);transform:translateY(-4px);}
+  .concept-main{position:relative;display:block;aspect-ratio:4/5;background:var(--blue-50);overflow:hidden;}
+  .concept-main img{width:100%;height:100%;object-fit:cover;transition:transform .3s ease;}
+  .concept-card:hover .concept-main img{transform:scale(1.04);}
+  .concept-num{
+    position:absolute;top:14px;left:14px;background:rgba(255,255,255,0.92);color:var(--blue-900);
+    font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px;letter-spacing:0.05em;
+  }
+  .concept-overlay{
+    position:absolute;left:0;right:0;bottom:0;padding:20px 18px 16px;
+    background:linear-gradient(180deg, rgba(28,36,48,0) 0%, rgba(28,36,48,0.78) 100%);
+    color:#fff;
+  }
+  .concept-overlay .tag{font-size:11px;font-weight:800;color:var(--blue-300);letter-spacing:0.06em;margin-bottom:4px;}
+  .concept-overlay h3{font-size:19px;font-weight:800;}
+  .concept-details{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);}
+  .concept-details a{display:block;aspect-ratio:1/1;overflow:hidden;background:var(--blue-50);}
+  .concept-details img{width:100%;height:100%;object-fit:cover;transition:transform .3s ease;}
+  .concept-details a:hover img{transform:scale(1.06);}
+  .concept-body{padding:18px 20px 22px;}
+  .concept-body p{font-size:13px;color:#666;line-height:1.6;margin-bottom:16px;}
+  .concept-body .btn{display:block;width:100%;text-align:center;}
+
   /* ---------- Reviews ---------- */
   .review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   .review-card{
@@ -266,6 +345,7 @@
     .cat-grid{grid-template-columns:repeat(2,1fr);}
     .steps{grid-template-columns:repeat(2,1fr);row-gap:28px;}
     .prod-grid{grid-template-columns:repeat(2,1fr);}
+    .concept-grid{grid-template-columns:1fr;}
     .review-grid{grid-template-columns:1fr;}
     .gift-grid{grid-template-columns:repeat(3,1fr);}
     .story .wrap{flex-direction:column;}
@@ -277,6 +357,33 @@
 </style>
 </head>
 <body>
+
+<div class="event-overlay" id="eventOverlay">
+  <div class="event-modal">
+    <div class="ev-photo">
+      <span class="ev-badge">EVENT</span>
+      <button class="ev-close" id="eventClose" aria-label="팝업 닫기">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <img src="images/event-turtle-keyring.png" alt="행운거북이 세트 키링" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="ev-fallback" style="display:none;">🐢</div>
+    </div>
+    <div class="ev-body">
+      <div class="ev-eyebrow">이벤트 참여 특별 선물</div>
+      <div class="ev-title">100% 증정 🐢<br><span>행운거북이 세트 키링</span></div>
+      <p class="ev-desc">
+        <b>제품 협찬을 받고 홍보해주시는 모든 분</b>께<br>
+        담음의 행운거북이 세트 키링을 100% 증정해드려요.<br>
+        지금 바로 참여하고 나만의 담뭉이 굿즈와 함께<br>귀여운 거북이 참을 만나보세요.
+      </p>
+      <div class="ev-btns">
+        <a class="btn btn-light" href="#" id="eventCloseBtn">다음에 볼게요</a>
+        <a class="btn btn-dark" href="mailto:hello@damum.shop?subject=%EC%9D%B4%EB%B2%A4%ED%8A%B8%20%EC%B0%B8%EC%97%AC%20%EB%AC%B8%EC%9D%98">이벤트 참여하기</a>
+      </div>
+      <button class="ev-hide" id="eventHideToday">오늘 하루 그만 보기</button>
+    </div>
+  </div>
+</div>
 
 <header>
   <div class="nav">
@@ -297,7 +404,7 @@
     <div class="icons">
       <button aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
       <button aria-label="위시리스트"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
-      <button aria-label="장바구니"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+      <a href="https://ig.me/m/damum_custom" target="_blank" rel="noopener noreferrer" aria-label="인스타그램 DM으로 구매문의"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
       <button aria-label="마이페이지"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-3.8 5-6 8-6s6.4 2.2 8 6"/></svg></button>
       <button class="hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileDrawer">
         <span></span><span></span><span></span>
@@ -358,24 +465,27 @@
   </section>
 
   <!-- CATEGORY -->
-  <section class="cat-strip" id="shop">
+  <section id="quick-shop">
     <div class="wrap">
-      <div class="cat-grid">
-        <a class="cat-item" href="tshirt.html">
-          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 4L4 7v3h3v10h10V10h3V7l-4-3H8z"/></svg></div>
-          <span>티셔츠</span>
+      <div class="best-head">
+        <h2>카테고리 바로가기</h2>
+      </div>
+      <div class="prod-grid">
+        <a class="prod-card" href="tshirt.html">
+          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/t1-1.jpg" alt="담음 커스텀 티셔츠"></div>
+          <div class="prod-info"><div class="name">담음 커스텀 티셔츠</div><div class="price">29,900원</div></div>
         </a>
-        <a class="cat-item" href="hat.html">
-          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 13c0-5 4-9 9-9s9 4 9 9"/><path d="M3 13h18v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-          <span>모자</span>
+        <a class="prod-card" href="hat.html">
+          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/hat1-1.jpg" alt="담음 커스텀 모자"></div>
+          <div class="prod-info"><div class="name">담음 커스텀 모자</div><div class="price">25,900원</div></div>
         </a>
-        <a class="cat-item" href="keyring.html">
-          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M9 11v4l3 3"/><rect x="14" y="15" width="6" height="6" rx="1"/></svg></div>
-          <span>키링</span>
+        <a class="prod-card" href="keyring.html">
+          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/kiring1-1.jpg" alt="담음 커스텀 키링"></div>
+          <div class="prod-info"><div class="name">담음 커스텀 키링</div><div class="price">9,900원</div></div>
         </a>
-        <a class="cat-item" href="case.html">
-          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><line x1="10" y1="19" x2="14" y2="19"/></svg></div>
-          <span>폰케이스</span>
+        <a class="prod-card" href="case.html">
+          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/case1-1.png" alt="담음 커스텀 폰케이스"></div>
+          <div class="prod-info"><div class="name">담음 커스텀 폰케이스</div><div class="price">19,900원</div></div>
         </a>
       </div>
     </div>
@@ -420,30 +530,75 @@
     </div>
   </section>
 
-  <!-- BEST PRODUCTS -->
+  <!-- BEST CONCEPT -->
   <section id="best">
     <div class="wrap">
       <div class="best-head">
-        <h2>BEST 상품</h2>
-        <a href="#">전체보기 &rsaquo;</a>
+        <h2>BEST 컨셉</h2>
+        <a href="review.html">고객 후기 보기 &rsaquo;</a>
       </div>
-      <div class="prod-grid">
-        <a class="prod-card" href="tshirt.html">
-          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/t1-1.jpg" alt="담음 커스텀 티셔츠"></div>
-          <div class="prod-info"><div class="name">담음 커스텀 티셔츠</div><div class="price">29,900원</div></div>
-        </a>
-        <a class="prod-card" href="hat.html">
-          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/hat1-1.jpg" alt="담음 커스텀 모자"></div>
-          <div class="prod-info"><div class="name">담음 커스텀 모자</div><div class="price">25,900원</div></div>
-        </a>
-        <a class="prod-card" href="keyring.html">
-          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/kiring1-1.jpg" alt="담음 커스텀 키링"></div>
-          <div class="prod-info"><div class="name">담음 커스텀 키링</div><div class="price">9,900원</div></div>
-        </a>
-        <a class="prod-card" href="case.html">
-          <div class="prod-thumb"><span class="prod-badge">BEST</span><img src="images/case1-1.png" alt="담음 커스텀 폰케이스"></div>
-          <div class="prod-info"><div class="name">담음 커스텀 폰케이스</div><div class="price">19,900원</div></div>
-        </a>
+      <div style="font-size:13px;color:#888;margin-top:-24px;margin-bottom:36px;">
+        지금 가장 사랑받는 담음의 인기 컨셉이에요. 사진 한 장이면 나만의 굿즈로 완성돼요.
+      </div>
+      <div class="concept-grid">
+
+        <div class="concept-card">
+          <a class="concept-main" href="tshirt.html">
+            <span class="concept-num">01</span>
+            <img src="images/t1-3.png" alt="반려동물 티셔츠 - 담음 커스텀 티셔츠">
+            <div class="concept-overlay">
+              <div class="tag">TSHIRTS</div>
+              <h3>반려동물 티셔츠</h3>
+            </div>
+          </a>
+          <div class="concept-details">
+            <a href="tshirt.html"><img src="images/t1-1.jpg" alt="담음 티셔츠 플랫레이"></a>
+            <a href="tshirt.html"><img src="images/t1-2.png" alt="담음 티셔츠 자수 디테일"></a>
+          </div>
+          <div class="concept-body">
+            <p>우리 아이 얼굴을 자수로 새겨 세상에 하나뿐인 티셔츠로 만들어보세요. 매일 함께하는 든든한 기분.</p>
+            <a class="btn btn-dark" href="tshirt.html">지금 만들기!</a>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <a class="concept-main" href="case.html">
+            <span class="concept-num">02</span>
+            <img src="images/case1-1.png" alt="고양이 케이스 - 담음 커스텀 폰케이스">
+            <div class="concept-overlay">
+              <div class="tag">PHONE CASES</div>
+              <h3>고양이 케이스</h3>
+            </div>
+          </a>
+          <div class="concept-details">
+            <a href="case.html"><img src="images/case1-2.png" alt="담음 폰케이스 각도컷"></a>
+            <a href="case.html"><img src="images/case1-3.jpg" alt="담음 폰케이스 디테일"></a>
+          </div>
+          <div class="concept-body">
+            <p>매일 들고 다니는 폰케이스에 담뭉이를 담아보세요. 선명한 인쇄와 완충 소재로 오래 예뻐요.</p>
+            <a class="btn btn-dark" href="case.html">지금 만들기!</a>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <a class="concept-main" href="keyring.html">
+            <span class="concept-num">03</span>
+            <img src="images/kiring1-1.jpg" alt="인생샷 키링 - 담음 커스텀 키링">
+            <div class="concept-overlay">
+              <div class="tag">KEYRINGS</div>
+              <h3>인생샷 키링</h3>
+            </div>
+          </a>
+          <div class="concept-details">
+            <a href="keyring.html"><img src="images/kiring1-2.jpg" alt="담음 키링 활용컷"></a>
+            <a href="keyring.html"><img src="images/kiring1-3.jpg" alt="담음 키링 패키지 컷"></a>
+          </div>
+          <div class="concept-body">
+            <p>가장 아끼는 순간의 사진을 키링으로. 가방에, 파우치에 달아두고 매일 꺼내보는 나만의 기억.</p>
+            <a class="btn btn-dark" href="keyring.html">지금 만들기!</a>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -594,7 +749,7 @@
         <a href="#">사업자정보확인</a>
       </div>
       <div class="foot-social">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        <a href="https://www.instagram.com/damum_custom/" target="_blank" rel="noopener noreferrer" aria-label="인스타그램"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
       </div>
@@ -634,6 +789,46 @@
   overlay.addEventListener('click', closeDrawer);
   closeBtn.addEventListener('click', closeDrawer);
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeDrawer(); });
+})();
+</script>
+<script>
+(function(){
+  var overlay = document.getElementById('eventOverlay');
+  var closeBtn = document.getElementById('eventClose');
+  var closeLink = document.getElementById('eventCloseBtn');
+  var hideTodayBtn = document.getElementById('eventHideToday');
+  var STORAGE_KEY = 'damum_event_popup_hide_until';
+
+  function todayStr(){
+    var d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  }
+  function closePopup(){
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  function openPopup(){
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  var hideUntil = localStorage.getItem(STORAGE_KEY);
+  if (hideUntil !== todayStr()) {
+    window.addEventListener('load', function(){
+      setTimeout(openPopup, 400);
+    });
+  }
+
+  closeBtn.addEventListener('click', closePopup);
+  closeLink.addEventListener('click', function(e){ e.preventDefault(); closePopup(); });
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closePopup(); });
+  hideTodayBtn.addEventListener('click', function(){
+    localStorage.setItem(STORAGE_KEY, todayStr());
+    closePopup();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && overlay.classList.contains('show')) closePopup();
+  });
 })();
 </script>
 
